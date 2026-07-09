@@ -1,0 +1,135 @@
+/**
+ * Motion layer — progressive enhancement only.
+ * The page is fully readable without any of this.
+ * Original implementation: GSAP ScrollTrigger + Lenis + a lerped trailing cursor.
+ */
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
+
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = window.matchMedia('(pointer: fine)').matches;
+
+/* ---- trailing cursor dot ---- */
+if (finePointer && !reduced) {
+  const dot = document.createElement('div');
+  dot.className = 'cursor-dot';
+  document.body.appendChild(dot);
+  let mx = -100, my = -100, cx = -100, cy = -100, shown = false;
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX; my = e.clientY;
+    if (!shown) { dot.style.opacity = '1'; shown = true; }
+  });
+  document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; shown = false; });
+  document.addEventListener('mouseover', (e) => {
+    dot.classList.toggle('big', !!e.target.closest('a, button, input, textarea'));
+  });
+  (function loop() {
+    cx += (mx - cx) * 0.13; cy += (my - cy) * 0.13;
+    dot.style.left = cx + 'px'; dot.style.top = cy + 'px';
+    requestAnimationFrame(loop);
+  })();
+}
+
+if (!reduced) {
+  gsap.registerPlugin(ScrollTrigger);
+  document.documentElement.classList.add('gs');
+
+  /* ---- Lenis smooth scroll, wired to ScrollTrigger ---- */
+  let lenis;
+  try {
+    lenis = new Lenis({ lerp: 0.11, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((t) => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  } catch (e) { /* native scroll fallback */ }
+
+  /* ---- layered hero parallax ---- */
+  const heroST = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true };
+  gsap.to('.l-clouds-back',  { xPercent: -8,  ease: 'none', scrollTrigger: heroST });
+  gsap.to('.l-clouds-front', { xPercent: -19, ease: 'none', scrollTrigger: heroST });
+  gsap.to('.l-ridge', { yPercent: -9, scale: 1.1, transformOrigin: '50% 100%', ease: 'none', scrollTrigger: heroST });
+  gsap.to('[data-hero]', { yPercent: -30, opacity: 0.12, ease: 'none', scrollTrigger: heroST });
+  gsap.to('.hero-eyebrow, .hero-foot', {
+    opacity: 0, ease: 'none',
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: '42% top', scrub: true },
+  });
+
+  /* ---- stats parallax drift ---- */
+  gsap.utils.toArray('.stat').forEach((el, i) => {
+    gsap.fromTo(el, { y: i % 2 ? 90 : 40 }, {
+      y: i % 2 ? 10 : -20, ease: 'none',
+      scrollTrigger: { trigger: '.stats', start: 'top bottom', end: 'bottom top', scrub: true },
+    });
+  });
+
+  /* ---- showcase: persistent slabs that morph between scenes ---- */
+  if (window.matchMedia('(min-width: 881px)').matches) {
+    const stage = document.querySelector('[data-stage]');
+    const scenes = gsap.utils.toArray('[data-scene]');
+    const railBtns = gsap.utils.toArray('.rail button');
+
+    const mkSlab = () => {
+      const d = document.createElement('div');
+      d.className = 'mslab';
+      stage.appendChild(d);
+      return d;
+    };
+    const A = mkSlab(), B = mkSlab();
+
+    /* per-scene shape states — constant 4-point clip paths tween smoothly */
+    const S = [
+      { a: { top: '38%', xPercent: -64, yPercent: -50, width: '30vw', height: '10vw', rotation: 0,  borderRadius: '0vw',   clipPath: 'polygon(0% 0%, 92% 0%, 100% 100%, 8% 100%)' },
+        b: { top: '58%', xPercent: -28, yPercent: -50, width: '24vw', height: '10vw', rotation: 0,  borderRadius: '0vw',   clipPath: 'polygon(8% 0%, 100% 0%, 92% 100%, 0% 100%)' } },
+      { a: { top: '42%', xPercent: -115, yPercent: -50, width: '15vw', height: '15vw', rotation: 0, borderRadius: '15vw',  clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' },
+        b: { top: '56%', xPercent: -8,  yPercent: -38, width: '26vw', height: '11vw', rotation: -8, borderRadius: '0.4vw', clipPath: 'polygon(3% 0%, 100% 6%, 97% 100%, 0% 94%)' } },
+      { a: { top: '33%', xPercent: -50, yPercent: -50, width: '31vw', height: '9vw',  rotation: 4,  borderRadius: '0vw',   clipPath: 'polygon(0% 0%, 100% 0%, 96% 100%, 4% 100%)' },
+        b: { top: '67%', xPercent: -50, yPercent: -50, width: '31vw', height: '9vw',  rotation: -3, borderRadius: '0vw',   clipPath: 'polygon(4% 0%, 96% 0%, 100% 100%, 0% 100%)' } },
+      { a: { top: '44%', xPercent: -96, yPercent: -40, width: '22vw', height: '11vw', rotation: -3, borderRadius: '0vw',   clipPath: 'polygon(0% 0%, 100% 0%, 84% 100%, 16% 100%)' },
+        b: { top: '52%', xPercent: 4,   yPercent: -60, width: '19vw', height: '12vw', rotation: 6,  borderRadius: '1.6vw', clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' } },
+    ];
+    gsap.set(A, S[0].a);
+    gsap.set(B, S[0].b);
+
+    const content = (s) => s.querySelectorAll('.ghost, .bot, .scene-apps, .scene-data');
+    scenes.forEach((s, i) => { if (i > 0) gsap.set(content(s), { opacity: 0, y: 22 }); });
+    scenes[0].classList.add('live');
+
+    const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
+    for (let i = 1; i < scenes.length; i++) {
+      tl.to(A, { duration: 0.85, ...S[i].a }, i - 0.42)
+        .to(B, { duration: 0.85, ...S[i].b }, i - 0.42)
+        .to(content(scenes[i - 1]), { opacity: 0, y: -18, duration: 0.3, stagger: 0.02 }, i - 0.42)
+        .to(content(scenes[i]),     { opacity: 1, y: 0,   duration: 0.4, stagger: 0.05 }, i - 0.12);
+    }
+    tl.to({}, { duration: 0.45 });
+
+    const st = ScrollTrigger.create({
+      trigger: stage, start: 'top top', end: '+=' + scenes.length * 105 + '%',
+      pin: true, scrub: 0.6, animation: tl,
+      onUpdate(self) {
+        const idx = Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length));
+        railBtns.forEach((b, k) => b.classList.toggle('on', k === idx));
+        scenes.forEach((s, k) => s.classList.toggle('live', k === idx));
+      },
+    });
+    railBtns.forEach((b) => {
+      b.addEventListener('click', () => {
+        const frac = (parseInt(b.dataset.go, 10) + 0.5) / scenes.length;
+        const y = st.start + (st.end - st.start) * frac;
+        if (lenis) lenis.scrollTo(y);
+        else window.scrollTo({ top: y, behavior: 'smooth' });
+      });
+    });
+  }
+
+  /* ---- editorial reveals ---- */
+  gsap.utils
+    .toArray('.statement h2, .about-cols > *, .row, .xp, .m-item, .pull, .contact h2, .contact-grid > *')
+    .forEach((el) => {
+      gsap.from(el, {
+        y: 34, opacity: 0, duration: 0.7, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 88%' },
+      });
+    });
+}

@@ -1,0 +1,108 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Pratik Pawar — Senior Flutter Developer | Mobile Apps, India',
+  description = 'Senior Flutter developer in Nashik, India with 5+ years building fast, tested, store-ready mobile apps — payments, agri-tech, restaurant tech — using AI-augmented, test-first development. Open to remote work.',
+} = Astro.props;
+
+const keywords = [
+  'Pratik Pawar',
+  'Senior Flutter Developer',
+  'Flutter developer India',
+  'Flutter developer Nashik',
+  'hire Flutter developer',
+  'mobile app developer India',
+  'cross-platform app development',
+  'Dart developer',
+  'Flutter payment integration',
+  'AI-augmented developer',
+  'agentic development',
+  'Cursor AI',
+  'Claude Code',
+  'TDD Flutter',
+  'clean architecture Flutter',
+  'remote Flutter engineer',
+  'restaurant POS app developer',
+  'agritech app developer',
+].join(', ');
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/images/ridge.jpg', Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="Pratik Pawar" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Pratik Pawar — Portfolio" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:site" content="@impratikpwr" />
+
+    <!-- Person schema -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: 'Pratik Pawar',
+        url: 'https://pratikpwr.me',
+        jobTitle: 'Senior Flutter Developer',
+        description:
+          'Senior Flutter developer with 5+ years of experience in payments, agri-tech and restaurant-tech mobile apps, building test-first alongside AI agents.',
+        address: { '@type': 'PostalAddress', addressLocality: 'Nashik', addressCountry: 'IN' },
+        email: 'mailto:pratiksatishpawar@gmail.com',
+        knowsAbout: [
+          'Flutter', 'Dart', 'Mobile Development', 'Cross-platform Apps', 'Payment Integration',
+          'Clean Architecture', 'TDD', 'GraphQL', 'Firebase', 'AI-Augmented Development',
+          'Agentic Development', 'Cursor', 'Claude Code',
+        ],
+        sameAs: [
+          'https://github.com/pratikpwr',
+          'https://www.linkedin.com/in/pratikpwr/',
+          'https://x.com/impratikpwr',
+        ],
+      })}
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+    <script>
+      import '../scripts/motion.js';
+    </script>
+  </body>
+</html>
