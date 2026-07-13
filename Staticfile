@@ -1,0 +1,4 @@
+# Multi-page Astro static site — do not fall back to index.html for unknown paths.
+# Railpack serves dist/ with Caddy; 404.html is used for missing routes via Caddyfile.
+root: dist
+index_fallback: false

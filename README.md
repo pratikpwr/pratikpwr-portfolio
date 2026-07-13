@@ -30,6 +30,21 @@ npm test               # Playwright smoke tests (build + preview)
 
 ## Deploy
 
+- **Railway** — Railpack builds the Astro static site and serves `dist/` with
+  Caddy (`railway.toml`, `Staticfile`, `Caddyfile`). From the repo root:
+
+  ```bash
+  railway login          # once
+  railway up -y          # create project + deploy (or link an existing one)
+  railway domain         # public `*.up.railway.app` URL
+  railway variable set PUBLIC_WEB3FORMS_ACCESS_KEY=your-key
+  ```
+
+  Or in the dashboard: New Project → Deploy from GitHub → set
+  `PUBLIC_WEB3FORMS_ACCESS_KEY` (available at **build** time — Astro inlines
+  `PUBLIC_*` vars). Point `pratikpwr.me` at the Railway service domain when
+  ready. Do not add a `start` script; that disables static Caddy serving.
+
 - **GitHub Pages** — enable Pages (Settings → Pages → Source: GitHub Actions).
   Add repository secret `PUBLIC_WEB3FORMS_ACCESS_KEY` (Web3Forms public key).
   The workflow builds, typechecks, runs Playwright, then deploys on every push

@@ -1,0 +1,13 @@
+# https://docs.railway.com/guides/astro
+# Static Astro site — Railpack detects astro.config.mjs, runs npm run build,
+# and serves dist/ with Caddy (see Staticfile + Caddyfile).
+# Do not set deploy.startCommand; that disables the static Caddy deploy path.
+
+[build]
+builder = "RAILPACK"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
