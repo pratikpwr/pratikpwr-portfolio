@@ -1,0 +1,29 @@
+---
+import { experience } from '../data/portfolio';
+---
+
+<section id="experience" class="xp-sec wrap" aria-labelledby="xp-h">
+  <h2 id="xp-h" class="eyebrow">Experience — 2021 → present</h2>
+
+  {experience.map((job) => (
+    <article class="xp">
+      <div class="yr">
+        {job.year}<small>{job.period}</small>
+      </div>
+      <div class="xp-body">
+        <h3>
+          <a href={job.companyHref} target="_blank" rel="noopener noreferrer">
+            {job.company}
+          </a>
+        </h3>
+        <p class="role">{job.role}</p>
+        <p class="sum">{job.summary}</p>
+        <ul class="wins">
+          {job.wins.map((win) => (
+            <li set:html={win.html} />
+          ))}
+        </ul>
+      </div>
+    </article>
+  ))}
+</section>

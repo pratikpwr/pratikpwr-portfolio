@@ -1,3 +1,7 @@
+---
+import { resumeHref } from '../data/portfolio';
+---
+
 <header class="site">
   <nav class="nav" aria-label="Primary">
     <a class="nav-brand" href="#top">
@@ -10,8 +14,9 @@
       <a href="#work">Work</a>
       <a href="#experience">Experience</a>
       <a href="#contact">Contact</a>
+      <a class="nav-resume-mobile" href={resumeHref} target="_blank" rel="noopener noreferrer">Résumé ↗</a>
     </div>
     <span class="nav-loc">IN — Nashik</span>
-    <a class="nav-cta" href="https://drive.google.com/file/d/1leXRA5M61I4nziQzX8AtsRccU00caiI7/view?usp=sharing" target="_blank" rel="noopener noreferrer">Résumé ↗</a>
+    <a class="nav-cta" href={resumeHref} target="_blank" rel="noopener noreferrer">Résumé ↗</a>
   </nav>
 </header>

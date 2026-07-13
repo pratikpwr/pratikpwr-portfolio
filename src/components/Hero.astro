@@ -1,23 +1,62 @@
-<!-- ============ HERO ============ -->
-  <section class="hero" aria-label="Introduction">
-    <div class="hero-layers" role="img" aria-label="Misty ridge of the Sahyadri mountains near Nashik, with drifting clouds">
-      <div class="layer l-clouds-back"><img src="/images/clouds.jpg" alt=""></div>
-      <div class="layer l-ridge"><img src="/images/ridge.jpg" alt=""></div>
-      <div class="layer l-clouds-front"><img src="/images/clouds.jpg" alt=""></div>
+---
+import { Picture } from 'astro:assets';
+import clouds from '../assets/images/clouds.jpg';
+import ridge from '../assets/images/ridge.jpg';
+---
+
+<section class="hero" aria-label="Introduction">
+  <div class="hero-layers" role="img" aria-label="Misty ridge of the Sahyadri mountains near Nashik, with drifting clouds">
+    <div class="layer l-clouds-back">
+      <Picture
+        src={clouds}
+        formats={['avif', 'webp']}
+        alt=""
+        widths={[800, 1200, 1600]}
+        sizes="140vw"
+        layout="none"
+        loading="eager"
+        decoding="async"
+      />
     </div>
-    <div class="hero-inner wrap">
-      <p class="hero-eyebrow eyebrow">Pratik Pawar — Senior Flutter Developer</p>
-      <h1 class="hero-h" data-hero>
-        <span class="l"><span>Built</span></span>
-        <span class="l"><span>to</span></span>
-        <span class="l"><span>ship<i class="dot">.</i></span></span>
-      </h1>
+    <div class="layer l-ridge">
+      <Picture
+        src={ridge}
+        formats={['avif', 'webp']}
+        alt=""
+        widths={[900, 1400, 2000]}
+        sizes="120vw"
+        layout="none"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
     </div>
-    <div class="hero-foot wrap">
-      <span class="scroll-cue">Scroll</span>
-      <div class="hero-para">
-        <p>Five years of <b>fast, tested, store-ready Flutter apps</b> — payments, agri-tech, restaurant tech — built alongside AI agents, test-first.</p>
-        <a class="u-link" href="#build">What I build</a>
-      </div>
+    <div class="layer l-clouds-front">
+      <Picture
+        src={clouds}
+        formats={['avif', 'webp']}
+        alt=""
+        widths={[800, 1200, 1600]}
+        sizes="155vw"
+        layout="none"
+        loading="eager"
+        decoding="async"
+      />
     </div>
-  </section>
+  </div>
+  <div class="hero-inner wrap">
+    <p class="hero-eyebrow eyebrow">Pratik Pawar — Senior Flutter Developer</p>
+    <h1 class="hero-h" data-hero>
+      <span class="l"><span>Built</span></span>
+      <span class="l"><span>to</span></span>
+      <span class="l"><span>ship<i class="dot">.</i></span></span>
+    </h1>
+  </div>
+  <div class="hero-foot wrap">
+    <span class="scroll-cue">Scroll</span>
+    <div class="hero-para">
+      <p>Five years of <b>fast, tested, store-ready Flutter apps</b> — payments, agri-tech, restaurant tech — built alongside AI agents, test-first.</p>
+      <a class="u-link" href="#build">What I build</a>
+    </div>
+  </div>
+</section>

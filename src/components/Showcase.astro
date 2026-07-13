@@ -1,0 +1,99 @@
+---
+import { Picture } from 'astro:assets';
+import { showcaseScenes } from '../data/portfolio';
+import seedpods from '../assets/images/showcase-seedpods.png';
+import seedhead from '../assets/images/showcase-seedhead.png';
+import grass from '../assets/images/showcase-grass.png';
+import leaf from '../assets/images/showcase-leaf.png';
+import fern from '../assets/images/showcase-fern.png';
+
+const images = { seedpods, seedhead, grass, leaf, fern } as const;
+---
+
+<section id="build" class="showcase" aria-labelledby="build-h">
+  <div class="show-head wrap">
+    <h2 id="build-h" class="eyebrow">What I build — five territories</h2>
+  </div>
+  <div class="stage" data-stage>
+    <div class="rail" role="tablist" aria-label="Showcase territories">
+      {showcaseScenes.map((scene, i) => (
+        <button
+          type="button"
+          role="tab"
+          data-go={String(i)}
+          class={i === 0 ? 'on' : undefined}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          aria-controls={`scene-${scene.id}`}
+          id={`tab-${scene.id}`}
+        >
+          {scene.title}
+        </button>
+      ))}
+    </div>
+    <p class="scene-live visually-hidden" aria-live="polite" data-scene-live>
+      Showing {showcaseScenes[0].title}
+    </p>
+
+    {showcaseScenes.map((scene, i) => (
+      <article
+        class:list={['scene', scene.sceneClass, { on: i === 0 }]}
+        data-scene
+        id={`scene-${scene.id}`}
+        role="tabpanel"
+        aria-labelledby={`tab-${scene.id}`}
+      >
+        <div class="scene-inner wrap">
+          <p class="ghost" aria-hidden="true" set:html={scene.ghost} />
+          <span class="slab slab-a" aria-hidden="true"></span>
+          <span class="slab slab-b" aria-hidden="true"></span>
+          <Picture
+            class="bot"
+            src={images[scene.image]}
+            formats={['avif', 'webp']}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            widths={[480, 720, 960]}
+            sizes="(max-width: 880px) 70vw, 40vw"
+            layout="none"
+          />
+          <div class="scene-tag">
+            <span class="no">{scene.indexLabel}</span>
+            <h3>{scene.title}</h3>
+          </div>
+          <div class="scene-side">
+            <div class="scene-apps">
+              {scene.apps.map((app) => (
+                <a href={app.href} target="_blank" rel="noopener noreferrer">
+                  {app.label}
+                </a>
+              ))}
+            </div>
+            <div class="scene-data">
+              {scene.meta.map((row) => (
+                <div>
+                  <span>{row.label}</span>
+                  <b>
+                    {row.highlight ? (
+                      row.highlightPosition === 'after' ? (
+                        <>
+                          {row.value} <i>{row.highlight}</i>
+                        </>
+                      ) : (
+                        <>
+                          <i>{row.highlight}</i> {row.value}
+                        </>
+                      )
+                    ) : (
+                      row.value
+                    )}
+                  </b>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

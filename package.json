@@ -3,18 +3,27 @@
   "version": "1.0.0",
   "description": "Portfolio of Pratik Pawar — Senior Flutter Developer. Astro + GSAP + Lenis.",
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.0.7",
     "gsap": "^3.12.5",
-    "lenis": "^1.1.14"
+    "lenis": "^1.1.14",
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "playwright": "^1.61.1"
+    "@astrojs/check": "^0.9.6",
+    "@playwright/test": "^1.61.1",
+    "typescript": "^5.9.3"
   }
 }

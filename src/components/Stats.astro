@@ -1,0 +1,24 @@
+---
+import { stats } from '../data/portfolio';
+---
+
+<section class="stats wrap" aria-labelledby="stats-h">
+  <div class="stats-note">
+    <h2 id="stats-h" class="visually-hidden">Key figures</h2>
+    <p>Figures from shipped work — payments hardware, codegen tooling and growth launchpads.</p>
+    <a class="u-link" href="#experience">Where they happened</a>
+  </div>
+  <div class="stats-grid">
+    {stats.map((stat) => (
+      <div class="stat">
+        <span class="num">
+          {stat.value}{stat.suffix && <small>{stat.suffix}</small>}
+        </span>
+        <p class="lbl">
+          {stat.label}
+          <span>{stat.detail}</span>
+        </p>
+      </div>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,19 @@
+---
+import { methodItems, methodQuote } from '../data/portfolio';
+---
+
+<section class="method" aria-labelledby="method-h">
+  <div class="wrap">
+    <h2 id="method-h" class="visually-hidden">How I build</h2>
+    <p class="pull" set:html={methodQuote} />
+    <div class="method-grid">
+      {methodItems.map((item) => (
+        <div class="m-item">
+          <span class="no">{item.number}</span>
+          <h3>{item.title}</h3>
+          <p set:html={item.bodyHtml} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

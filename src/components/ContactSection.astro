@@ -1,51 +1,92 @@
-<!-- ============ CONTACT ============ -->
-  <section id="contact" class="contact" aria-labelledby="contact-h">
-    <h2 id="contact-h" class="wrap">The opportunity to build, ship, and <em>look ahead.</em></h2>
-    <a class="mail" href="mailto:pratiksatishpawar@gmail.com">pratiksatishpawar@gmail.com</a>
+---
+import { Picture } from 'astro:assets';
+import { contactLinks } from '../data/portfolio';
+import form01 from '../assets/images/abstract-form-01.jpg';
+import form02 from '../assets/images/abstract-form-02.jpg';
+import form03 from '../assets/images/abstract-form-03.jpg';
+import form04 from '../assets/images/abstract-form-04.jpg';
 
-    <div class="strip-wrap" aria-hidden="true">
-      <div class="strip">
-        <!-- set A -->
-        <img src="/images/abstract-form-01.jpg" alt="">
-        <img src="/images/abstract-form-02.jpg" alt="">
-        <img src="/images/abstract-form-03.jpg" alt="">
-        <img src="/images/abstract-form-04.jpg" alt="">
-        <!-- set B (exact duplicate for seamless loop) -->
-        <img src="/images/abstract-form-01.jpg" alt="">
-        <img src="/images/abstract-form-02.jpg" alt="">
-        <img src="/images/abstract-form-03.jpg" alt="">
-        <img src="/images/abstract-form-04.jpg" alt="">
-      </div>
+const stripImages = [form01, form02, form03, form04];
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY;
+const thanksUrl = new URL('/thanks', Astro.site ?? 'https://pratikpwr.me').href;
+---
+
+<section id="contact" class="contact" aria-labelledby="contact-h">
+  <h2 id="contact-h" class="wrap">The opportunity to build, ship, and <em>look ahead.</em></h2>
+  <a class="mail" href="mailto:pratiksatishpawar@gmail.com">pratiksatishpawar@gmail.com</a>
+
+  <div class="strip-wrap" aria-hidden="true">
+    <div class="strip">
+      {[...stripImages, ...stripImages].map((img) => (
+        <Picture
+          src={img}
+          formats={['avif', 'webp']}
+          alt=""
+          widths={[320, 480, 640]}
+          sizes="(max-width: 620px) 45vw, 210px"
+          layout="none"
+          loading="lazy"
+          decoding="async"
+        />
+      ))}
     </div>
+  </div>
 
-    <div class="contact-grid">
-      <div class="c-meta">
-        <a href="tel:+917218172664"><b>+91 72181 72664</b><span>Phone</span></a>
-        <a href="https://github.com/pratikpwr" target="_blank" rel="noopener noreferrer"><b>github.com/pratikpwr</b><span>GitHub</span></a>
-        <a href="https://www.linkedin.com/in/pratikpwr/" target="_blank" rel="noopener noreferrer"><b>linkedin.com/in/pratikpwr</b><span>LinkedIn</span></a>
-        <a href="https://x.com/impratikpwr" target="_blank" rel="noopener noreferrer"><b>x.com/impratikpwr</b><span>X</span></a>
-        <a href="https://drive.google.com/file/d/1leXRA5M61I4nziQzX8AtsRccU00caiI7/view?usp=sharing" target="_blank" rel="noopener noreferrer"><b>Résumé</b><span>PDF ↗</span></a>
-      </div>
-      <form class="form" action="https://api.web3forms.com/submit" method="POST" aria-label="Contact form">
-        <input type="hidden" name="access_key" value="1fb6ec4f-af5f-49d4-870e-28eed2430339">
-        <input type="hidden" name="subject" value="New message from pratikpwr.me">
-        <input type="hidden" name="from_name" value="pratikpwr.me — portfolio">
-        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
-        <div><label for="f-name">Name</label><input id="f-name" type="text" name="name" placeholder="Your name" required></div>
-        <div><label for="f-email">Email</label><input id="f-email" type="email" name="email" placeholder="you@example.com" required></div>
-        <div><label for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="Tell me about your project…" required></textarea></div>
-        <button type="submit">Send message →</button>
-      </form>
+  <div class="contact-grid">
+    <div class="c-meta">
+      {contactLinks.map((link) => (
+        <a
+          href={link.href}
+          target={link.external ? '_blank' : undefined}
+          rel={link.external ? 'noopener noreferrer' : undefined}
+        >
+          <b>{link.label}</b>
+          <span>{link.detail}</span>
+        </a>
+      ))}
     </div>
-
-    <footer class="site">
-      <div class="wrap foot">
-        <span class="mark">
-          <img class="mark-svg" src="/icon-p.png?v=3" alt="" width="14" height="14" />
-          © 2026 Pratik Pawar · Nashik, India
-        </span>
-        <span>Instrument Sans &amp; Instrument Serif · original design, built test-first</span>
-        <span><a href="https://github.com/pratikpwr" target="_blank" rel="noopener noreferrer">GitHub</a> · <a href="https://www.linkedin.com/in/pratikpwr/" target="_blank" rel="noopener noreferrer">LinkedIn</a> · <a href="https://x.com/impratikpwr" target="_blank" rel="noopener noreferrer">X</a></span>
+    <form class="form" action="https://api.web3forms.com/submit" method="POST" aria-label="Contact form">
+      {accessKey ? (
+        <input type="hidden" name="access_key" value={accessKey} />
+      ) : (
+        <p class="form-warning" role="status">
+          Contact form is temporarily unavailable. Email pratiksatishpawar@gmail.com instead.
+        </p>
+      )}
+      <input type="hidden" name="subject" value="New message from pratikpwr.me" />
+      <input type="hidden" name="from_name" value="pratikpwr.me — portfolio" />
+      <input type="hidden" name="redirect" value={thanksUrl} />
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <div>
+        <label for="f-name">Name</label>
+        <input id="f-name" type="text" name="name" placeholder="Your name" required autocomplete="name" />
       </div>
-    </footer>
-  </section>
+      <div>
+        <label for="f-email">Email</label>
+        <input id="f-email" type="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+      </div>
+      <div>
+        <label for="f-msg">Message</label>
+        <textarea id="f-msg" name="message" placeholder="Tell me about your project…" required></textarea>
+      </div>
+      <button type="submit" disabled={!accessKey}>Send message →</button>
+    </form>
+  </div>
+
+  <footer class="site">
+    <div class="wrap foot">
+      <span class="mark">
+        <img class="mark-svg" src="/icon-p.png?v=3" alt="" width="14" height="14" />
+        © 2026 Pratik Pawar · Nashik, India
+      </span>
+      <span>Instrument Sans &amp; Instrument Serif · original design, built test-first</span>
+      <span>
+        <a href="https://github.com/pratikpwr" target="_blank" rel="noopener noreferrer">GitHub</a>
+        ·
+        <a href="https://www.linkedin.com/in/pratikpwr/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        ·
+        <a href="https://x.com/impratikpwr" target="_blank" rel="noopener noreferrer">X</a>
+      </span>
+    </div>
+  </footer>
+</section>

@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+---
+
+<Base
+  title="Message sent — Pratik Pawar"
+  description="Thanks for reaching out. Pratik will get back to you soon."
+>
+  <Nav />
+  <main id="main" class="thanks wrap">
+    <p class="eyebrow">Contact</p>
+    <h1>Message sent.</h1>
+    <p class="thanks-lead">
+      Thanks for writing. I’ll read it carefully and reply soon —
+      usually within a day or two.
+    </p>
+    <a class="u-link" href="/">Back to portfolio</a>
+  </main>
+</Base>
+
+<style>
+  .thanks {
+    min-height: 70svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 18px;
+    padding-block: clamp(80px, 14vh, 140px);
+  }
+  .thanks h1 {
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    font-size: clamp(2.4rem, 6vw, 4.4rem);
+    line-height: 1.05;
+  }
+  .thanks-lead {
+    max-width: 34em;
+    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    color: var(--grey);
+    margin-bottom: 12px;
+  }
+</style>

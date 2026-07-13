@@ -1,0 +1,22 @@
+---
+import { aboutMeta } from '../data/portfolio';
+---
+
+<section id="about" class="statement wrap" aria-labelledby="about-h">
+  <p class="eyebrow">About Pratik</p>
+  <h2 id="about-h">A product-minded mobile engineer focused on apps that <em>survive production.</em></h2>
+  <div class="about-cols">
+    <div class="lead">
+      <p>I care about the whole life of an app — the architecture underneath it, the tests around it, and the person tapping on it. Since 2021 I've shipped Flutter apps across <b>e-commerce, agri-tech and restaurant tech</b>: payment systems that talk to physical card readers, offline-first tools for farmers, POS platforms that keep restaurants running through the dinner rush.</p>
+      <p>I like the parts most people skip — foundations, tooling, code generation. I'd rather spend a day automating boilerplate than a week typing it.</p>
+    </div>
+    <dl class="about-meta">
+      {aboutMeta.map((row) => (
+        <div class="meta-row">
+          <dt>{row.label}</dt>
+          <dd set:html={row.valueHtml} />
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>

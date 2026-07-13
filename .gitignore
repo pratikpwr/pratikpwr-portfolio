@@ -3,6 +3,11 @@ dist/
 .astro/
 .DS_Store
 *.log
+.env
+.env.local
+test-results/
+playwright-report/
+blob-report/
 
 _bmad/
 _bmad-output/

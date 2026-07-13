@@ -2,38 +2,45 @@
 
 Portfolio of **Pratik Pawar**, Senior Flutter Developer (Nashik, India).
 
-Built with [Astro](https://astro.build) — static-first HTML with a progressive
-motion layer (GSAP ScrollTrigger + Lenis). The page is fully readable with
-JavaScript disabled; every animation is an enhancement.
+Built with [Astro 7](https://astro.build) — static-first HTML with optimized
+`astro:assets` images/fonts, typed portfolio data, and a progressive motion
+layer (GSAP ScrollTrigger + Lenis). The page is fully readable with JavaScript
+disabled; every animation is an enhancement.
 
 ## Design
 
 "Summit" — an editorial monochrome system: grain-white canvas, Instrument Sans
 + Instrument Serif, signal-red accents, layered Sahyadri-ridge hero with
 independent cloud parallax, a pinned showcase where two red shapes morph
-between four territories of work, and a lerped trailing cursor.
+between territories of work, and a lerped trailing cursor.
 
 ## Develop
 
+Requires **Node.js ≥ 22.12**.
+
 ```bash
+cp .env.example .env   # add PUBLIC_WEB3FORMS_ACCESS_KEY
 npm install
-npm run dev      # http://localhost:4321
-npm run build    # outputs to ./dist
-npm run preview  # preview the production build
+npm run dev            # http://localhost:4321
+npm run check          # Astro + TypeScript diagnostics
+npm run build          # outputs to ./dist
+npm run preview        # preview the production build
+npm test               # Playwright smoke tests (build + preview)
 ```
 
 ## Deploy
 
 - **GitHub Pages** — enable Pages (Settings → Pages → Source: GitHub Actions).
-  The included workflow (`.github/workflows/deploy.yml`) builds and deploys on
-  every push to `main`. Point the `pratikpwr.me` custom domain at Pages.
+  Add repository secret `PUBLIC_WEB3FORMS_ACCESS_KEY` (Web3Forms public key).
+  The workflow builds, typechecks, runs Playwright, then deploys on every push
+  to `main`. Point the `pratikpwr.me` custom domain at Pages.
 - **Vercel / Netlify** — import the repo; framework preset: Astro. Set the
-  custom domain to `pratikpwr.me`.
+  same `PUBLIC_WEB3FORMS_ACCESS_KEY` env var and custom domain.
 
 ## Contact form
 
-The contact form posts natively to Web3Forms using the site's public access
-key — no JavaScript required.
+The contact form posts natively to Web3Forms using `PUBLIC_WEB3FORMS_ACCESS_KEY`
+and redirects to `/thanks` on success — no client JavaScript required.
 
 ---
 
