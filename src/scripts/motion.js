@@ -85,14 +85,6 @@ if (!reduced) {
     };
     const A = mkSlab(), B = mkSlab();
 
-    /* slim scroll-progress rail on the right edge */
-    const track = document.createElement('div');
-    track.className = 'showcase-track';
-    const dot = document.createElement('div');
-    dot.className = 'showcase-dot';
-    track.appendChild(dot);
-    stage.appendChild(track);
-
     /* per-scene shape states — constant 4-point clip paths tween smoothly */
     const S = [
       { a: { top: '38%', xPercent: -64, yPercent: -50, width: '30vw', height: '10vw', rotation: 0,  borderRadius: '0vw',   clipPath: 'polygon(0% 0%, 92% 0%, 100% 100%, 8% 100%)' },
@@ -106,13 +98,17 @@ if (!reduced) {
       { a: { top: '40%', xPercent: -85, yPercent: -55, width: '17vw', height: '20vw', rotation: 0,  borderRadius: '8vw 8vw 0 0', clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' },
         b: { top: '58%', xPercent: 2,   yPercent: -14, width: '27vw', height: '10vw', rotation: -4, borderRadius: '0vw',   clipPath: 'polygon(6% 0%, 100% 0%, 94% 100%, 0% 100%)' } },
     ];
-    gsap.set(A, S[0].a);
-    gsap.set(B, S[0].b);
-    gsap.set([A, B], { scale: 1, transformOrigin: '50% 50%' });
+    /* entrance pose: shapes start pulled apart and rotated outward, but fully opaque —
+       content must never be invisible, so only transform settles in, opacity never does */
+    gsap.set(A, { ...S[0].a, scale: 1.4, rotation: (S[0].a.rotation || 0) - 16 });
+    gsap.set(B, { ...S[0].b, scale: 1.4, rotation: (S[0].b.rotation || 0) + 16 });
+    gsap.set([A, B], { transformOrigin: '50% 50%' });
 
     /* ghost + bot already carry their own centering transform (translate(-50%,-50%));
-       animating x/y on them via GSAP would clobber that, so they only ever fade opacity.
-       scene-apps/scene-data have no base transform, so they're free to also drift on y. */
+       animating x/y/scale on them via GSAP would clobber that, so they only ever fade opacity.
+       scene-apps/scene-data have no base transform, so they're free to also drift on y.
+       scene 0's own content stays visible from the very first frame — only later scenes
+       (which the viewer hasn't reached yet) start hidden and fade in on their turn. */
     const contentFade = (s) => s.querySelectorAll('.ghost, .bot');
     const contentShift = (s) => s.querySelectorAll('.scene-apps, .scene-data');
     scenes.forEach((s, i) => {
@@ -126,6 +122,13 @@ if (!reduced) {
     /* each transition gets a wider, slightly overshooting window so the morph
        reads as one continuous gesture rather than a quick snap between states */
     const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
+
+    /* entrance: a short, snappy settle that plays across only the first sliver of scroll —
+       shapes are visible immediately, just still mid-motion, so there's no dead static hold
+       and never a moment where the section reads as empty */
+    tl.to(A, { ...S[0].a, scale: 1, rotation: S[0].a.rotation || 0, duration: 0.16 }, 0)
+      .to(B, { ...S[0].b, scale: 1, rotation: S[0].b.rotation || 0, duration: 0.16 }, 0);
+
     for (let i = 1; i < scenes.length; i++) {
       tl.to(A, { duration: 0.75, scale: 1.05, ...S[i].a }, i - 0.55)
         .to(A, { duration: 0.2, scale: 1 }, i - 0.55 + 0.75)
@@ -145,7 +148,6 @@ if (!reduced) {
         const idx = Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length));
         railBtns.forEach((b, k) => b.classList.toggle('on', k === idx));
         scenes.forEach((s, k) => s.classList.toggle('live', k === idx));
-        dot.style.top = (self.progress * 100) + '%';
       },
     });
     railBtns.forEach((b) => {

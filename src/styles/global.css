@@ -181,22 +181,32 @@ header.site{
   .gs .scene-inner{min-height:0;position:absolute;inset:0}
   .gs .scene-tag{display:none}
   .gs .scene .slab{display:none}
-  .gs .bot{height:118svh}
+  /* every scene shares the same optical center (50%,50%) and stays fully inside the
+     pinned frame — sized so even the rotated ones (rotation inflates the visual
+     bounding box) clear the sticky nav at the top with room to spare. A soft edge
+     fade is layered on top purely as polish, not as a crutch for covering up clipping */
+  .gs .bot{
+    height:76svh;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 6%,#000 94%,transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 0%,#000 6%,#000 94%,transparent 100%);
+  }
+  /* rotated ~6deg — that tilt widens the effective bounding box, so it needs to
+     start smaller than the others to end up the same visual size on screen */
+  .gs .s2 .bot{height:70svh}
   /* the leaf silhouette is far denser than the others (almost no negative space) —
-     shrink and shift it up so its solid mass clears the headline instead of blotting it out */
-  .gs .s3 .bot{height:78svh;transform:translate(-50%,-72%)}
-  /* the seedpods branch is berry-dense through its upper 3/4 and only clears near
-     the base of the stem — push it down so that bare stem sits behind the headline */
-  .gs .s5 .bot{height:96svh;transform:translate(-50%,-78%) rotate(5deg)}
+     shrink it so its solid mass clears the headline instead of blotting it out */
+  .gs .s3 .bot{height:68svh}
+  /* flipped + rotated ~4deg, same bounding-box correction as s2 */
+  .gs .s4 .bot{height:72svh}
+  /* the seedpods branch is berry-dense through its upper 3/4 and rotated ~5deg —
+     shrink it so the headline stays legible and the tilt still clears the nav */
+  .gs .s5 .bot{height:70svh;transform:translate(-50%,-50%) rotate(5deg)}
   /* one cohesive right-aligned data cluster, instead of two split blocks */
   .gs .scene-side{position:absolute;right:clamp(20px,4.5vw,56px);bottom:clamp(60px,10vh,100px);z-index:4;display:flex;flex-direction:column;align-items:flex-end;gap:28px}
   .gs .scene-apps{position:static;left:auto;bottom:auto;text-align:right;justify-items:end}
   .gs .scene-data{position:static;right:auto;bottom:auto}
   /* persistent morphing slabs (created by JS) */
   .mslab{position:absolute;left:50%;background:var(--red);z-index:1;will-change:transform,clip-path}
-  /* scroll-progress indicator (created by JS) */
-  .showcase-track{position:absolute;right:clamp(14px,3vw,32px);top:14%;bottom:14%;width:1px;background:var(--line-soft);z-index:10}
-  .showcase-dot{position:absolute;left:50%;top:0;width:7px;height:7px;border-radius:50%;background:var(--red);transform:translate(-50%,-50%);will-change:top}
 }
 /* custom trailing cursor */
 .cursor-dot{

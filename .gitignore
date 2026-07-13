@@ -3,3 +3,7 @@ dist/
 .astro/
 .DS_Store
 *.log
+
+_bmad/
+_bmad-output/
+.agents/

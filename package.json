@@ -13,5 +13,8 @@
     "astro": "^5.0.0",
     "gsap": "^3.12.5",
     "lenis": "^1.1.14"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
   }
 }
