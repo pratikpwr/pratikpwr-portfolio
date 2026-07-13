@@ -16,7 +16,11 @@ import { workItems } from '../data/portfolio';
         rel="noopener noreferrer"
       >
         <span class="n">{String(i + 1).padStart(2, '0')}</span>
-        <h3>{item.title}</h3>
+        <div class="row-main">
+          <h3>{item.title}</h3>
+          <p class="desc">{item.description}</p>
+          {item.stack && <p class="stack">{item.stack}</p>}
+        </div>
         <span class="org">{item.org}</span>
         <span class="go">{item.cta}</span>
       </a>

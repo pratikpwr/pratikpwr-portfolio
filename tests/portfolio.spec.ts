@@ -10,9 +10,12 @@ test.describe('portfolio smoke', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Built/ })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Selected work' })).toBeVisible();
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /Flutter/);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /HealthTech/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /pratikpwr\.me/);
     const jsonLd = await page.locator('script[type="application/ld+json"]').evaluate((el) => el.textContent ?? '');
     expect(jsonLd).toContain('"email":"pratiksatishpawar@gmail.com"');
+    expect(jsonLd).toContain('Nirmo');
+    expect(jsonLd).toContain('GraphQL');
   });
 
   test('primary navigation anchors exist', async ({ page }) => {
@@ -21,6 +24,39 @@ test.describe('portfolio smoke', () => {
       await expect(page.locator(`#${id}`)).toBeAttached();
       await expect(page.locator(`.nav-links a[href="#${id}"]`)).toBeVisible();
     }
+  });
+
+  test('selected work includes Nirmo and project descriptions', async ({ page }) => {
+    await page.goto('/');
+    const work = page.locator('#work');
+    await expect(work.getByRole('heading', { name: 'Nirmo' })).toBeVisible();
+    await expect(work.locator('.desc').first()).toBeVisible();
+    await expect(work.locator('.desc').first()).not.toBeEmpty();
+    await expect(work.getByText(/AI-powered Flutter app builder/i)).toBeVisible();
+    await expect(work.locator('a.row[href*="nirmo"]')).toHaveAttribute('rel', /noopener/);
+    await expect(work.locator('a.row[href*="nirmo"]')).toHaveAttribute('target', '_blank');
+  });
+
+  test('experience summaries are enriched', async ({ page }) => {
+    await page.goto('/');
+    const xp = page.locator('#experience');
+    await expect(xp.locator('p.sum').filter({ hasText: /Consulting-grade software crafting/ })).toBeVisible();
+    await expect(xp.locator('p.sum').filter({ hasText: /translating complex requirements/ })).toBeVisible();
+    await expect(xp.locator('p.sum').filter({ hasText: /method channels/ })).toBeVisible();
+    await expect(xp.locator('p.sum').filter({ hasText: /flavors, analytics, Sentry/ })).toBeVisible();
+    await expect(xp.getByRole('heading', { name: 'DreamCare Developers' })).toBeVisible();
+    await expect(xp.locator('p.role', { hasText: /^Flutter Developer$/ })).toBeVisible();
+  });
+
+  test('developer tools showcase includes Nirmo', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('link', { name: /Nirmo/ }).first()).toBeVisible();
+  });
+
+  test('about mentions HealthTech and AI tooling', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#about')).toContainText(/HealthTech/);
+    await expect(page.locator('#about')).toContainText(/AI agentic tools/);
   });
 
   test('showcase rail is keyboard reachable on desktop', async ({ page, isMobile }) => {
@@ -46,7 +82,10 @@ test.describe('portfolio smoke', () => {
     await expect(page.getByLabel('Email')).toBeVisible();
     await expect(page.getByLabel('Message')).toBeVisible();
     await expect(form.locator('input[name="redirect"]')).toHaveAttribute('value', /\/thanks/);
-    await expect(form.locator('input[name="access_key"]')).toHaveCount(1);
+    const accessKey = form.locator('input[name="access_key"]');
+    await expect(accessKey).toHaveCount(1);
+    await expect(accessKey).toHaveAttribute('value', /.+/);
+    await expect(form.getByRole('button', { name: /Send message/ })).toBeEnabled();
   });
 
   test('thanks and 404 pages render', async ({ page }) => {

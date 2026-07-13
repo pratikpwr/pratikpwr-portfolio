@@ -29,6 +29,10 @@ export interface WorkItem {
   org: string;
   href: string;
   cta: string;
+  /** Short project blurb shown under the title */
+  description: string;
+  /** Optional tech stack line */
+  stack?: string;
 }
 
 export interface StatItem {
