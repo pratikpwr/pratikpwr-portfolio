@@ -63,6 +63,14 @@ if (!reduced) {
     });
   });
 
+  /* ---- stats numerals: dim until scrolled into focus, then full red ---- */
+  gsap.utils.toArray('.stat .num').forEach((el) => {
+    gsap.fromTo(el, { opacity: 0.28 }, {
+      opacity: 1, ease: 'none',
+      scrollTrigger: { trigger: el, start: 'top 78%', end: 'top 42%', scrub: true },
+    });
+  });
+
   /* ---- showcase: persistent slabs that morph between scenes ---- */
   if (window.matchMedia('(min-width: 881px)').matches) {
     const stage = document.querySelector('[data-stage]');
@@ -77,6 +85,14 @@ if (!reduced) {
     };
     const A = mkSlab(), B = mkSlab();
 
+    /* slim scroll-progress rail on the right edge */
+    const track = document.createElement('div');
+    track.className = 'showcase-track';
+    const dot = document.createElement('div');
+    dot.className = 'showcase-dot';
+    track.appendChild(dot);
+    stage.appendChild(track);
+
     /* per-scene shape states — constant 4-point clip paths tween smoothly */
     const S = [
       { a: { top: '38%', xPercent: -64, yPercent: -50, width: '30vw', height: '10vw', rotation: 0,  borderRadius: '0vw',   clipPath: 'polygon(0% 0%, 92% 0%, 100% 100%, 8% 100%)' },
@@ -87,30 +103,49 @@ if (!reduced) {
         b: { top: '67%', xPercent: -50, yPercent: -50, width: '31vw', height: '9vw',  rotation: -3, borderRadius: '0vw',   clipPath: 'polygon(4% 0%, 96% 0%, 100% 100%, 0% 100%)' } },
       { a: { top: '44%', xPercent: -96, yPercent: -40, width: '22vw', height: '11vw', rotation: -3, borderRadius: '0vw',   clipPath: 'polygon(0% 0%, 100% 0%, 84% 100%, 16% 100%)' },
         b: { top: '52%', xPercent: 4,   yPercent: -60, width: '19vw', height: '12vw', rotation: 6,  borderRadius: '1.6vw', clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' } },
+      { a: { top: '40%', xPercent: -85, yPercent: -55, width: '17vw', height: '20vw', rotation: 0,  borderRadius: '8vw 8vw 0 0', clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' },
+        b: { top: '58%', xPercent: 2,   yPercent: -14, width: '27vw', height: '10vw', rotation: -4, borderRadius: '0vw',   clipPath: 'polygon(6% 0%, 100% 0%, 94% 100%, 0% 100%)' } },
     ];
     gsap.set(A, S[0].a);
     gsap.set(B, S[0].b);
+    gsap.set([A, B], { scale: 1, transformOrigin: '50% 50%' });
 
-    const content = (s) => s.querySelectorAll('.ghost, .bot, .scene-apps, .scene-data');
-    scenes.forEach((s, i) => { if (i > 0) gsap.set(content(s), { opacity: 0, y: 22 }); });
+    /* ghost + bot already carry their own centering transform (translate(-50%,-50%));
+       animating x/y on them via GSAP would clobber that, so they only ever fade opacity.
+       scene-apps/scene-data have no base transform, so they're free to also drift on y. */
+    const contentFade = (s) => s.querySelectorAll('.ghost, .bot');
+    const contentShift = (s) => s.querySelectorAll('.scene-apps, .scene-data');
+    scenes.forEach((s, i) => {
+      if (i > 0) {
+        gsap.set(contentFade(s), { opacity: 0 });
+        gsap.set(contentShift(s), { opacity: 0, y: 26 });
+      }
+    });
     scenes[0].classList.add('live');
 
+    /* each transition gets a wider, slightly overshooting window so the morph
+       reads as one continuous gesture rather than a quick snap between states */
     const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
     for (let i = 1; i < scenes.length; i++) {
-      tl.to(A, { duration: 0.85, ...S[i].a }, i - 0.42)
-        .to(B, { duration: 0.85, ...S[i].b }, i - 0.42)
-        .to(content(scenes[i - 1]), { opacity: 0, y: -18, duration: 0.3, stagger: 0.02 }, i - 0.42)
-        .to(content(scenes[i]),     { opacity: 1, y: 0,   duration: 0.4, stagger: 0.05 }, i - 0.12);
+      tl.to(A, { duration: 0.75, scale: 1.05, ...S[i].a }, i - 0.55)
+        .to(A, { duration: 0.2, scale: 1 }, i - 0.55 + 0.75)
+        .to(B, { duration: 0.75, scale: 1.05, ...S[i].b }, i - 0.55)
+        .to(B, { duration: 0.2, scale: 1 }, i - 0.55 + 0.75)
+        .to(contentFade(scenes[i - 1]),  { opacity: 0, duration: 0.4, stagger: 0.025 }, i - 0.55)
+        .to(contentShift(scenes[i - 1]), { opacity: 0, y: -24, duration: 0.4, stagger: 0.025 }, i - 0.55)
+        .to(contentFade(scenes[i]),      { opacity: 1, duration: 0.5, stagger: 0.06 }, i - 0.15)
+        .to(contentShift(scenes[i]),     { opacity: 1, y: 0, duration: 0.5, stagger: 0.06 }, i - 0.15);
     }
-    tl.to({}, { duration: 0.45 });
+    tl.to({}, { duration: 0.5 });
 
     const st = ScrollTrigger.create({
-      trigger: stage, start: 'top top', end: '+=' + scenes.length * 105 + '%',
-      pin: true, scrub: 0.6, animation: tl,
+      trigger: stage, start: 'top top', end: '+=' + scenes.length * 160 + '%',
+      pin: true, scrub: 0.9, animation: tl,
       onUpdate(self) {
         const idx = Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length));
         railBtns.forEach((b, k) => b.classList.toggle('on', k === idx));
         scenes.forEach((s, k) => s.classList.toggle('live', k === idx));
+        dot.style.top = (self.progress * 100) + '%';
       },
     });
     railBtns.forEach((b) => {

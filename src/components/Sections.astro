@@ -18,45 +18,68 @@
 
   <!-- ============ STATS ============ -->
   <section class="stats wrap" aria-label="Key figures">
+    <div class="stats-note">
+      <p>Figures from shipped work — payments hardware, codegen tooling and growth launchpads.</p>
+      <a class="u-link" href="#experience">Where they happened</a>
+    </div>
     <div class="stats-grid">
       <div class="stat"><span class="num">5+</span><p class="lbl">Years shipping mobile<span>in production since 2021</span></p></div>
       <div class="stat"><span class="num">10</span><p class="lbl">Apps built &amp; shipped<span>6 on the Play Store, 3 open-source, 1 web</span></p></div>
       <div class="stat"><span class="num">−12<small>%</small></span><p class="lbl">Transaction costs<span>card-reader integrations at eatOS</span></p></div>
       <div class="stat"><span class="num">+30<small>%</small></span><p class="lbl">Weekly active users<span>launchpads at FarmSetu</span></p></div>
     </div>
-    <div class="stats-note">
-      <p>Figures from shipped work — payments hardware, codegen tooling and growth launchpads.</p>
-      <a class="u-link" href="#experience">Where they happened</a>
-    </div>
   </section>
 
   <!-- ============ SHOWCASE ============ -->
   <section id="build" class="showcase" aria-label="What I build">
-    <div class="show-head wrap"><span class="eyebrow">What I build — four territories</span></div>
+    <div class="show-head wrap"><span class="eyebrow">What I build — five territories</span></div>
     <div class="stage" data-stage>
       <div class="rail" aria-hidden="true">
-        <button data-go="0" class="on">Restaurant Tech</button>
-        <button data-go="1">Agri-Tech</button>
-        <button data-go="2">Civic &amp; Home</button>
-        <button data-go="3">Developer Tools</button>
+        <button data-go="0" class="on">Healthcare</button>
+        <button data-go="1">Restaurant Tech</button>
+        <button data-go="2">Agri-Tech</button>
+        <button data-go="3">Civic &amp; Home</button>
+        <button data-go="4">Developer Tools</button>
       </div>
 
-      <article class="scene s1 on" data-scene>
+      <article class="scene s5 on" data-scene>
+        <div class="scene-inner wrap">
+          <p class="ghost" aria-hidden="true">Health<br>care</p>
+          <span class="slab slab-a" aria-hidden="true"></span>
+          <span class="slab slab-b" aria-hidden="true"></span>
+          <img class="bot" src="/images/showcase-seedpods.png" alt="" loading="lazy">
+          <div class="scene-tag"><span class="no">01 / 05</span><h3>Healthcare</h3></div>
+          <div class="scene-side">
+            <div class="scene-apps">
+              <a href="https://www.springhealth.com/" target="_blank" rel="noopener noreferrer">Spring Health ↗</a>
+            </div>
+            <div class="scene-data">
+              <div><span>Platform</span><b>Spring Health — mental health benefits</b></div>
+              <div><span>Result</span><b>member-facing care &amp; booking flows</b></div>
+              <div><span>Stack</span><b>Flutter · Firebase · Telehealth APIs</b></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="scene s1" data-scene>
         <div class="scene-inner wrap">
           <p class="ghost" aria-hidden="true">Restaurant<br>Tech</p>
           <span class="slab slab-a" aria-hidden="true"></span>
           <span class="slab slab-b" aria-hidden="true"></span>
-          <img class="bot" src="/images/botanical-wildflower.jpg" alt="" loading="lazy">
-          <div class="scene-tag"><span class="no">01 / 04</span><h3>Restaurant Tech</h3></div>
-          <div class="scene-apps">
-            <a href="https://play.google.com/store/apps/details?id=com.eatos.pos" target="_blank" rel="noopener noreferrer">eatOS POS ↗</a>
-            <a href="https://play.google.com/store/apps/details?id=com.poslabs.eoskds" target="_blank" rel="noopener noreferrer">Kitchen Display System ↗</a>
-            <a href="https://www.eatos.com/" target="_blank" rel="noopener noreferrer">Point of Purchase ↗</a>
-          </div>
-          <div class="scene-data">
-            <div><span>Platform</span><b>eatOS — US / UK</b></div>
-            <div><span>Result</span><b><i>−12%</i> transaction costs</b></div>
-            <div><span>Stack</span><b>Flutter · Stripe · Adyen · NFC</b></div>
+          <img class="bot" src="/images/showcase-seedhead.png" alt="" loading="lazy">
+          <div class="scene-tag"><span class="no">02 / 05</span><h3>Restaurant Tech</h3></div>
+          <div class="scene-side">
+            <div class="scene-apps">
+              <a href="https://play.google.com/store/apps/details?id=com.eatos.pos" target="_blank" rel="noopener noreferrer">eatOS POS ↗</a>
+              <a href="https://play.google.com/store/apps/details?id=com.poslabs.eoskds" target="_blank" rel="noopener noreferrer">Kitchen Display System ↗</a>
+              <a href="https://www.eatos.com/" target="_blank" rel="noopener noreferrer">Point of Purchase ↗</a>
+            </div>
+            <div class="scene-data">
+              <div><span>Platform</span><b>eatOS — US / UK</b></div>
+              <div><span>Result</span><b><i>−12%</i> transaction costs</b></div>
+              <div><span>Stack</span><b>Flutter · Stripe · Adyen · NFC</b></div>
+            </div>
           </div>
         </div>
       </article>
@@ -66,16 +89,18 @@
           <p class="ghost" aria-hidden="true">Agri-<br>Tech</p>
           <span class="slab slab-a" aria-hidden="true"></span>
           <span class="slab slab-b" aria-hidden="true"></span>
-          <img class="bot" src="/images/botanical-grass.jpg" alt="" loading="lazy">
-          <div class="scene-tag"><span class="no">02 / 04</span><h3>Agri-Tech</h3></div>
-          <div class="scene-apps">
-            <a href="https://play.google.com/store/apps/details?id=co.setu.farm" target="_blank" rel="noopener noreferrer">SetuFarm ↗</a>
-            <a href="https://play.google.com/store/apps/details?id=co.setu.trade" target="_blank" rel="noopener noreferrer">SetuTrade ↗</a>
-          </div>
-          <div class="scene-data">
-            <div><span>Platform</span><b>FarmSetu — Nashik</b></div>
-            <div><span>Result</span><b><i>+30%</i> weekly active users</b></div>
-            <div><span>Stack</span><b>Flutter · Firebase · GraphQL</b></div>
+          <img class="bot" src="/images/showcase-grass.png" alt="" loading="lazy">
+          <div class="scene-tag"><span class="no">03 / 05</span><h3>Agri-Tech</h3></div>
+          <div class="scene-side">
+            <div class="scene-apps">
+              <a href="https://play.google.com/store/apps/details?id=co.setu.farm" target="_blank" rel="noopener noreferrer">SetuFarm ↗</a>
+              <a href="https://play.google.com/store/apps/details?id=co.setu.trade" target="_blank" rel="noopener noreferrer">SetuTrade ↗</a>
+            </div>
+            <div class="scene-data">
+              <div><span>Platform</span><b>FarmSetu — Nashik</b></div>
+              <div><span>Result</span><b><i>+30%</i> weekly active users</b></div>
+              <div><span>Stack</span><b>Flutter · Firebase · GraphQL</b></div>
+            </div>
           </div>
         </div>
       </article>
@@ -85,16 +110,18 @@
           <p class="ghost" aria-hidden="true">Civic &amp;<br>Home</p>
           <span class="slab slab-a" aria-hidden="true"></span>
           <span class="slab slab-b" aria-hidden="true"></span>
-          <img class="bot" src="/images/botanical-petal.jpg" alt="" loading="lazy" style="mix-blend-mode:multiply">
-          <div class="scene-tag"><span class="no">03 / 04</span><h3>Civic &amp; Home</h3></div>
-          <div class="scene-apps">
-            <a href="https://play.google.com/store/apps/details?id=com.dcdevelopers.policepatil" target="_blank" rel="noopener noreferrer">Police Patil System ↗</a>
-            <a href="https://play.google.com/store/apps/details?id=com.dcdevelopers.nearme" target="_blank" rel="noopener noreferrer">Nearme ↗</a>
-          </div>
-          <div class="scene-data">
-            <div><span>Platform</span><b>DreamCare — Pune</b></div>
-            <div><span>Result</span><b><i>+20%</i> app performance</b></div>
-            <div><span>Stack</span><b>Flutter · Maps · Web dashboard</b></div>
+          <img class="bot" src="/images/showcase-leaf.png" alt="" loading="lazy">
+          <div class="scene-tag"><span class="no">04 / 05</span><h3>Civic &amp; Home</h3></div>
+          <div class="scene-side">
+            <div class="scene-apps">
+              <a href="https://play.google.com/store/apps/details?id=com.dcdevelopers.policepatil" target="_blank" rel="noopener noreferrer">Police Patil System ↗</a>
+              <a href="https://play.google.com/store/apps/details?id=com.dcdevelopers.nearme" target="_blank" rel="noopener noreferrer">Nearme ↗</a>
+            </div>
+            <div class="scene-data">
+              <div><span>Platform</span><b>DreamCare — Pune</b></div>
+              <div><span>Result</span><b><i>+20%</i> app performance</b></div>
+              <div><span>Stack</span><b>Flutter · Maps · Web dashboard</b></div>
+            </div>
           </div>
         </div>
       </article>
@@ -104,16 +131,18 @@
           <p class="ghost" aria-hidden="true">Developer<br>Tools</p>
           <span class="slab slab-a" aria-hidden="true"></span>
           <span class="slab slab-b" aria-hidden="true"></span>
-          <img class="bot" src="/images/botanical-wildflower.jpg" alt="" loading="lazy" style="transform:translate(-56%,-48%) scaleX(-1) rotate(-4deg)">
-          <div class="scene-tag"><span class="no">04 / 04</span><h3>Developer Tools</h3></div>
-          <div class="scene-apps">
-            <a href="https://pub.dev/packages/graphql_network_devtools" target="_blank" rel="noopener noreferrer">graphql_network_devtools ↗</a>
-            <a href="https://github.com/pratikpwr" target="_blank" rel="noopener noreferrer">Mason codegen templates ↗</a>
-          </div>
-          <div class="scene-data">
-            <div><span>Platform</span><b>pub.dev · open source</b></div>
-            <div><span>Result</span><b>boilerplate <i>1h → 5m</i></b></div>
-            <div><span>Stack</span><b>Dart · DevTools · AI agents</b></div>
+          <img class="bot" src="/images/showcase-fern.png" alt="" loading="lazy">
+          <div class="scene-tag"><span class="no">05 / 05</span><h3>Developer Tools</h3></div>
+          <div class="scene-side">
+            <div class="scene-apps">
+              <a href="https://pub.dev/packages/graphql_network_devtools" target="_blank" rel="noopener noreferrer">graphql_network_devtools ↗</a>
+              <a href="https://github.com/pratikpwr" target="_blank" rel="noopener noreferrer">Mason codegen templates ↗</a>
+            </div>
+            <div class="scene-data">
+              <div><span>Platform</span><b>pub.dev · open source</b></div>
+              <div><span>Result</span><b>boilerplate <i>1h → 5m</i></b></div>
+              <div><span>Stack</span><b>Dart · DevTools · AI agents</b></div>
+            </div>
           </div>
         </div>
       </article>
