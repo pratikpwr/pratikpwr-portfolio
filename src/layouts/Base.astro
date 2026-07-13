@@ -2,15 +2,18 @@
 import { Font } from 'astro:assets';
 import '../styles/global.css';
 import ridge from '../assets/images/ridge.jpg';
+import { workItems } from '../data/portfolio';
 
 interface Props {
   title?: string;
   description?: string;
+  noindex?: boolean;
 }
 
 const {
   title = 'Pratik Pawar — Senior Flutter Developer | AI-Augmented Mobile App Expert',
   description = 'Senior Flutter developer in Nashik, India with 5+ years building fast, tested, store-ready mobile apps across HealthTech, agri-tech, restaurant tech and e-commerce — payments, GraphQL, CI/CD, and AI-augmented TDD. Open to remote work.',
+  noindex = false,
 } = Astro.props;
 
 const keywords = [
@@ -40,8 +43,131 @@ const keywords = [
   'agritech app developer',
 ].join(', ');
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL(ridge.src, Astro.site);
+const siteUrl = Astro.site ?? new URL('https://pratikpwr.me');
+const canonical = new URL(Astro.url.pathname, siteUrl);
+const ogImage = new URL(ridge.src, siteUrl);
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
+
+const robotsContent = noindex
+  ? 'noindex, follow'
+  : 'index, follow, max-snippet:-1, max-image-preview:large';
+
+const personId = 'https://pratikpwr.me/#person';
+const websiteId = 'https://pratikpwr.me/#website';
+
+const personSchema = {
+  '@type': 'Person',
+  '@id': personId,
+  name: 'Pratik Pawar',
+  url: 'https://pratikpwr.me',
+  jobTitle: 'Senior Flutter Developer',
+  description:
+    'Senior Flutter developer with 5+ years of experience in HealthTech, payments, agri-tech and restaurant-tech mobile apps, building test-first alongside AI agents.',
+  address: { '@type': 'PostalAddress', addressLocality: 'Nashik', addressCountry: 'IN' },
+  email: 'pratiksatishpawar@gmail.com',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Incubyte',
+    url: 'https://www.incubyte.co/',
+  },
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'SITRC Nashik',
+  },
+  knowsAbout: [
+    'Flutter',
+    'Dart',
+    'Mobile Development',
+    'Cross-platform Apps',
+    'Payment Integration',
+    'Clean Architecture',
+    'TDD',
+    'GraphQL',
+    'REST APIs',
+    'Firebase',
+    'CI/CD',
+    'Bloc',
+    'Riverpod',
+    'Provider',
+    'Hive',
+    'SQLite',
+    'Node.js',
+    'Flask',
+    'AI-Augmented Development',
+    'Agentic Development',
+    'Cursor',
+    'Claude Code',
+    'Nirmo',
+  ],
+  sameAs: [
+    'https://github.com/pratikpwr',
+    'https://www.linkedin.com/in/pratikpwr/',
+    'https://x.com/impratikpwr',
+  ],
+};
+
+const websiteSchema = {
+  '@type': 'WebSite',
+  '@id': websiteId,
+  name: 'Pratik Pawar — Portfolio',
+  url: 'https://pratikpwr.me',
+  description,
+  inLanguage: 'en',
+  publisher: { '@id': personId },
+};
+
+const pageSchema = isHome
+  ? {
+      '@type': 'ProfilePage',
+      '@id': 'https://pratikpwr.me/#profilepage',
+      url: 'https://pratikpwr.me/',
+      name: title,
+      description,
+      isPartOf: { '@id': websiteId },
+      about: { '@id': personId },
+      mainEntity: { '@id': personId },
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        url: ogImage.href,
+        width: ridge.width,
+        height: ridge.height,
+      },
+    }
+  : {
+      '@type': 'WebPage',
+      '@id': `${canonical.href}#webpage`,
+      url: canonical.href,
+      name: title,
+      description,
+      isPartOf: { '@id': websiteId },
+      about: { '@id': personId },
+    };
+
+const workListSchema = isHome
+  ? {
+      '@type': 'ItemList',
+      '@id': 'https://pratikpwr.me/#selected-work',
+      name: 'Selected work',
+      itemListOrder: 'https://schema.org/ItemListOrderAscending',
+      numberOfItems: workItems.length,
+      itemListElement: workItems.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'CreativeWork',
+          name: item.title,
+          description: item.description,
+          url: item.href,
+          ...(item.stack ? { keywords: item.stack } : {}),
+        },
+      })),
+    }
+  : null;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [personSchema, websiteSchema, pageSchema, ...(workListSchema ? [workListSchema] : [])],
+};
 ---
 
 <!doctype html>
@@ -53,11 +179,13 @@ const ogImage = new URL(ridge.src, Astro.site);
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="author" content="Pratik Pawar" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={robotsContent} />
+    <meta name="theme-color" content="#17171A" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" href="/icon-p.png?v=3" />
     <link rel="icon" href="/favicon.ico?v=3" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <!-- Open Graph -->
@@ -80,32 +208,11 @@ const ogImage = new URL(ridge.src, Astro.site);
     <meta name="twitter:image:alt" content="Misty ridge of the Sahyadri mountains near Nashik" />
     <meta name="twitter:site" content="@impratikpwr" />
 
-    <!-- Person schema -->
+    <!-- Structured data -->
     <script
       is:inline
       type="application/ld+json"
-      set:html={JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Person',
-        name: 'Pratik Pawar',
-        url: 'https://pratikpwr.me',
-        jobTitle: 'Senior Flutter Developer',
-        description:
-          'Senior Flutter developer with 5+ years of experience in HealthTech, payments, agri-tech and restaurant-tech mobile apps, building test-first alongside AI agents.',
-        address: { '@type': 'PostalAddress', addressLocality: 'Nashik', addressCountry: 'IN' },
-        email: 'pratiksatishpawar@gmail.com',
-        knowsAbout: [
-          'Flutter', 'Dart', 'Mobile Development', 'Cross-platform Apps', 'Payment Integration',
-          'Clean Architecture', 'TDD', 'GraphQL', 'REST APIs', 'Firebase', 'CI/CD',
-          'Bloc', 'Riverpod', 'Provider', 'Hive', 'SQLite', 'Node.js', 'Flask',
-          'AI-Augmented Development', 'Agentic Development', 'Cursor', 'Claude Code', 'Nirmo',
-        ],
-        sameAs: [
-          'https://github.com/pratikpwr',
-          'https://www.linkedin.com/in/pratikpwr/',
-          'https://x.com/impratikpwr',
-        ],
-      })}
+      set:html={JSON.stringify(jsonLd)}
     />
 
     <Font cssVariable="--font-sans" />

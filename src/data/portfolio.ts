@@ -115,7 +115,7 @@ export const showcaseScenes: ShowcaseScene[] = [
     indexLabel: '05 / 05',
     image: 'fern',
     apps: [
-      { label: 'Nirmo ↗', href: 'https://nirmo.vercel.app' },
+      { label: 'Nirmo ↗', href: 'https://nirmo.dev' },
       { label: 'graphql_network_devtools ↗', href: 'https://pub.dev/packages/graphql_network_devtools' },
       { label: 'Mason codegen templates ↗', href: 'https://github.com/pratikpwr' },
     ],
@@ -132,8 +132,8 @@ export const workItems: WorkItem[] = [
     id: 'nirmo',
     title: 'Nirmo',
     org: 'Personal · AI tooling',
-    href: 'https://nirmo.vercel.app',
-    cta: 'nirmo.vercel.app ↗',
+    href: 'https://nirmo.dev',
+    cta: 'nirmo.dev ↗',
     description:
       'AI-powered Flutter app builder that turns natural-language prompts into create, edit, and live-preview workflows across multiple device form factors — desktop-first tooling with Claude Sonnet and LLM agents in the loop.',
     stack: 'Flutter · Dart · Node.js · TypeScript · Claude · LLM',
@@ -331,7 +331,7 @@ export const methodItems: MethodItem[] = [
     number: '01',
     title: 'Agents in the loop',
     bodyHtml:
-      'Cursor and Claude Code as daily drivers — scaffolding, refactors, first-pass reviews, and tools like <a href="https://nirmo.vercel.app" target="_blank" rel="noopener noreferrer">Nirmo</a> that put LLMs inside the Flutter build loop.',
+      'Cursor and Claude Code as daily drivers — scaffolding, refactors, first-pass reviews, and tools like <a href="https://nirmo.dev" target="_blank" rel="noopener noreferrer">Nirmo</a> that put LLMs inside the Flutter build loop.',
   },
   {
     number: '02',

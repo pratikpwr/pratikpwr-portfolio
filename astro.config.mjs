@@ -4,7 +4,18 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://pratikpwr.me',
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      filter: (page) => !page.includes('/thanks') && !page.includes('/404'),
+      serialize(item) {
+        if (item.url === 'https://pratikpwr.me/' || item.url === 'https://pratikpwr.me') {
+          item.priority = 1.0;
+          item.changefreq = 'monthly';
+        }
+        return item;
+      },
+    }),
+  ],
   build: { inlineStylesheets: 'auto' },
   image: {
     layout: 'constrained',

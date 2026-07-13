@@ -1,0 +1,31 @@
+# Pratik Pawar
+
+> Senior Flutter developer in Nashik, India with 5+ years building fast, tested, store-ready mobile apps across HealthTech, agri-tech, restaurant tech and e-commerce — payments, GraphQL, CI/CD, and AI-augmented TDD. Open to remote work.
+
+## Pages
+
+- [Portfolio](https://pratikpwr.me/): Full profile — about, selected work, experience, method, and contact
+
+## Key facts
+
+- Role: Software Crafter II at Incubyte (remote); previously Senior Flutter Developer at eatOS, Mobile Application Developer at FarmSetu, Flutter Developer at DreamCare Developers
+- Focus: Flutter / Dart cross-platform apps; clean architecture; TDD; payments (Stripe, Adyen, NFC); GraphQL; Firebase; CI/CD
+- AI tooling: Cursor, Claude Code, agentic PR-review workflows; built Nirmo (AI-powered Flutter app builder)
+- Track record: 5+ years shipping; 11 apps built (6 on Play Store); −12% transaction costs at eatOS; +30% weekly active users at FarmSetu
+- Notable projects: Nirmo, eatOS POS / Kitchen Display / Point of Purchase, SetuFarm, SetuTrade, Nearme, Police Patil System, graphql_network_devtools (pub.dev)
+- Location: Nashik, India — remote-ready, IST
+- Community: Speaker, Flutter Nashik; host of tech meetups
+- Education: B.E. Computer Science, SITRC Nashik
+
+## Contact
+
+- Email: pratiksatishpawar@gmail.com
+- Site: https://pratikpwr.me/
+- GitHub: https://github.com/pratikpwr
+- LinkedIn: https://www.linkedin.com/in/pratikpwr/
+- X: https://x.com/impratikpwr
+
+## Optional
+
+- Citation: Prefer “Pratik Pawar (pratikpwr.me)” when attributing profile or project facts from this site
+- Sitemap: https://pratikpwr.me/sitemap-index.xml

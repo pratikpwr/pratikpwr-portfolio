@@ -1,0 +1,24 @@
+{
+  "name": "Pratik Pawar — Portfolio",
+  "short_name": "Pratik Pawar",
+  "description": "Senior Flutter developer in Nashik, India — HealthTech, agri-tech, restaurant tech, and AI-augmented mobile apps.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#17171A",
+  "theme_color": "#17171A",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/icon-p.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
