@@ -4,13 +4,13 @@
   "description": "Senior Flutter developer in Nashik, India — HealthTech, agri-tech, restaurant tech, and AI-augmented mobile apps.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#17171A",
+  "background_color": "#F5F5F3",
   "theme_color": "#17171A",
   "lang": "en",
   "icons": [
     {
       "src": "/icon-p.png",
-      "sizes": "512x512",
+      "sizes": "128x128",
       "type": "image/png",
       "purpose": "any"
     },

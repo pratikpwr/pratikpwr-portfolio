@@ -1,22 +1,86 @@
 ---
 import { resumeHref } from '../data/portfolio';
+
+// On pages other than home, section links must point back to the home page.
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
+const base = isHome ? '' : '/';
+
+const links = [
+  { href: `${base}#about`, label: 'About' },
+  { href: `${base}#build`, label: 'What I build' },
+  { href: `${base}#work`, label: 'Work' },
+  { href: `${base}#experience`, label: 'Experience' },
+  { href: `${base}#contact`, label: 'Contact' },
+];
 ---
 
 <header class="site">
   <nav class="nav" aria-label="Primary">
-    <a class="nav-brand" href="#top">
+    <a class="nav-brand" href={isHome ? '#top' : '/'}>
       <img class="mark-svg" src="/icon-p.png?v=3" alt="" width="18" height="18" />
       <span>Pratik Pawar</span>
     </a>
-    <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#build">What I build</a>
-      <a href="#work">Work</a>
-      <a href="#experience">Experience</a>
-      <a href="#contact">Contact</a>
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="nav-links"
+      data-nav-toggle
+    >
+      <span class="nav-toggle-label" data-nav-toggle-label>Menu</span>
+      <span class="nav-toggle-icon" aria-hidden="true"></span>
+    </button>
+    <div class="nav-links" id="nav-links" data-nav-links>
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
       <a class="nav-resume-mobile" href={resumeHref} target="_blank" rel="noopener noreferrer">Résumé ↗</a>
     </div>
     <span class="nav-loc">IN — Nashik</span>
     <a class="nav-cta" href={resumeHref} target="_blank" rel="noopener noreferrer">Résumé ↗</a>
   </nav>
 </header>
+
+<script>
+  // Mobile menu. Without JavaScript, the links stay in a scrollable row.
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-nav-links]');
+  const label = document.querySelector<HTMLElement>('[data-nav-toggle-label]');
+
+  if (toggle && panel) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      document.documentElement.classList.toggle('nav-open', open);
+      if (label) label.textContent = open ? 'Close' : 'Menu';
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    panel.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (
+        toggle.getAttribute('aria-expanded') === 'true' &&
+        event.target instanceof Node &&
+        !panel.contains(event.target) &&
+        !toggle.contains(event.target)
+      ) {
+        setOpen(false);
+      }
+    });
+
+    // Close the menu when the viewport grows past the mobile breakpoint.
+    window.matchMedia('(min-width: 761px)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>

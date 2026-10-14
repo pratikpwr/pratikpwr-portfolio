@@ -43,20 +43,22 @@ const images = { seedpods, seedhead, grass, leaf, fern } as const;
         aria-labelledby={`tab-${scene.id}`}
       >
         <div class="scene-inner wrap">
-          <p class="ghost" aria-hidden="true" set:html={scene.ghost} />
-          <span class="slab slab-a" aria-hidden="true"></span>
-          <span class="slab slab-b" aria-hidden="true"></span>
-          <Picture
-            class="bot"
-            src={images[scene.image]}
-            formats={['avif', 'webp']}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            widths={[480, 720, 960]}
-            sizes="(max-width: 880px) 70vw, 40vw"
-            layout="none"
-          />
+          <div class="scene-art" aria-hidden="true">
+            <p class="ghost" set:html={scene.ghost} />
+            <span class="slab slab-a"></span>
+            <span class="slab slab-b"></span>
+            <Picture
+              class="bot"
+              src={images[scene.image]}
+              formats={['avif', 'webp']}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              widths={[480, 720, 960]}
+              sizes="(max-width: 880px) 80vw, 40vw"
+              layout="none"
+            />
+          </div>
           <div class="scene-tag">
             <span class="no">{scene.indexLabel}</span>
             <h3>{scene.title}</h3>

@@ -2,62 +2,101 @@
 
 Portfolio of **Pratik Pawar**, Senior Flutter Developer (Nashik, India).
 
-Built with [Astro 7](https://astro.build) — static-first HTML with optimized
-`astro:assets` images/fonts, typed portfolio data, and a progressive motion
-layer (GSAP ScrollTrigger + Lenis). The page is fully readable with JavaScript
-disabled; every animation is an enhancement.
+The site uses [Astro 7](https://astro.build). Astro builds static HTML with
+optimized images and self-hosted fonts. A motion layer (GSAP ScrollTrigger and
+Lenis) adds the animations. The page is fully readable with JavaScript off. If
+the visitor asks for reduced motion, the site turns the animations off.
 
 ## Design
 
-"Summit" — an editorial monochrome system: grain-white canvas, Instrument Sans
-+ Instrument Serif, signal-red accents, layered Sahyadri-ridge hero with
-independent cloud parallax, a pinned showcase where two red shapes morph
-between territories of work, and a lerped trailing cursor.
+The design is editorial and monochrome:
+
+- A grain-white canvas, Instrument Sans and Instrument Serif, and red accents.
+- A layered Sahyadri ridge in the hero, with clouds that move at their own speed.
+- A pinned showcase on desktop, where two red shapes change form between the
+  five areas of work. On phones and tablets, each area is a stacked card.
+- A trailing cursor dot on devices with a mouse.
 
 ## Develop
 
-Requires **Node.js ≥ 22.12**.
+You need **Node.js 22.12 or later**.
 
 ```bash
 cp .env.example .env   # add PUBLIC_WEB3FORMS_ACCESS_KEY
 npm install
 npm run dev            # http://localhost:4321
-npm run check          # Astro + TypeScript diagnostics
-npm run build          # outputs to ./dist
-npm run preview        # preview the production build
-npm test               # Playwright smoke tests (build + preview)
+npm run check          # Astro and TypeScript diagnostics
+npm run build          # writes the site to ./dist
+npm run preview        # serves the production build
+npm test               # Playwright smoke tests on desktop and mobile
+npm run og             # renders public/og.jpg (the social preview card)
 ```
 
-## Deploy
+If Playwright cannot find a browser, run `npx playwright install chromium` once.
 
-- **Railway** — Railpack builds the Astro static site and serves `dist/` with
-  Caddy (`railway.toml`, `Staticfile`, `Caddyfile`). From the repo root:
+## Project layout
 
-  ```bash
-  railway login          # once
-  railway up -y          # create project + deploy (or link an existing one)
-  railway domain         # public `*.up.railway.app` URL
-  railway variable set PUBLIC_WEB3FORMS_ACCESS_KEY=your-key
-  ```
+| Path | What it holds |
+|---|---|
+| `src/data/portfolio.ts` | All page content: about, stats, showcase, work, experience, contact. |
+| `src/components/` | One Astro component per section. |
+| `src/styles/global.css` | Design tokens, layout, and the responsive rules. |
+| `src/scripts/motion.js` | GSAP, Lenis, the showcase pin, and in-page anchor scrolling. |
+| `src/assets/fonts/` | Instrument Sans and Instrument Serif (latin subset, SIL Open Font License). |
+| `scripts/og.mjs` | Renders the 1200 × 630 social preview image. |
+| `Caddyfile` | Production server: caching, security headers, `www` redirect, 404 page. |
 
-  Or in the dashboard: New Project → Deploy from GitHub → set
-  `PUBLIC_WEB3FORMS_ACCESS_KEY` (available at **build** time — Astro inlines
-  `PUBLIC_*` vars). Point `pratikpwr.me` at the Railway service domain when
-  ready. Do not add a `start` script; that disables static Caddy serving.
+## Deploy (Railway)
 
-- **GitHub Pages** — enable Pages (Settings → Pages → Source: GitHub Actions).
-  Add repository secret `PUBLIC_WEB3FORMS_ACCESS_KEY` (Web3Forms public key).
-  The workflow builds, typechecks, runs Playwright, then deploys on every push
-  to `main`. Point the `pratikpwr.me` custom domain at Pages.
-- **Vercel / Netlify** — import the repo; framework preset: Astro. Set the
-  same `PUBLIC_WEB3FORMS_ACCESS_KEY` env var and custom domain.
+Railway hosts the site at `pratikpwr.me` and `www.pratikpwr.me`. Railpack builds
+the static site and serves `dist/` with Caddy (`railway.toml`, `Staticfile`,
+`Caddyfile`).
+
+1. Make sure the service has the variable `PUBLIC_WEB3FORMS_ACCESS_KEY`.
+   Astro puts `PUBLIC_*` values into the page at **build** time. Without the
+   key, the contact form shows a notice and the send button is disabled.
+2. Deploy from the repository root:
+
+   ```bash
+   railway login          # once
+   railway link           # once: select the pratikpwr-portfolio project
+   railway up -y
+   ```
+
+3. Check the health endpoint: `https://pratikpwr.me/health` returns `200`.
+
+Do not add a `start` script or `deploy.startCommand`. Either one turns off the
+static Caddy deploy.
+
+### What the Caddyfile does
+
+- Sends `www.pratikpwr.me` to `https://pratikpwr.me` with a permanent redirect.
+- Caches `/_astro/*` files for one year. Their names contain a content hash.
+- Makes pages revalidate on every visit, so a new deploy shows at once.
+- Sends security headers, including a Content Security Policy. The policy
+  allows only two third parties: Umami analytics and the Web3Forms API. If you
+  add a new third-party script or API, add its origin to the policy.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push to `main` and on every pull
+request. It typechecks, builds, and runs the Playwright tests on desktop and
+mobile. The CI build is never deployed. If the repository has no
+`PUBLIC_WEB3FORMS_ACCESS_KEY` secret, CI uses a placeholder key.
 
 ## Contact form
 
-The contact form posts natively to Web3Forms using `PUBLIC_WEB3FORMS_ACCESS_KEY`
-and redirects to `/thanks` on success — no client JavaScript required.
+The form posts to Web3Forms with the key from `PUBLIC_WEB3FORMS_ACCESS_KEY`:
+
+- With JavaScript, the form sends with `fetch` and opens `/thanks` on success.
+  If the send fails, the form shows the error and keeps the message text.
+- Without JavaScript, the form posts natively and Web3Forms redirects to `/thanks`.
+
+## Analytics
+
+Umami counts visits on `pratikpwr.me` only (`data-domains`). Local and preview
+builds do not send data.
 
 ---
 
-© 2026 Pratik Pawar. Design and code original; typeset in Instrument Sans &
-Instrument Serif.
+© Pratik Pawar. Typeset in Instrument Sans and Instrument Serif.

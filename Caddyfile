@@ -17,12 +17,30 @@
 		format json
 	}
 
+	# Railway health check (see healthcheckPath in railway.toml).
 	respond /health 200
+
+	# Serve one canonical host. Send www traffic to the apex domain.
+	@www host www.pratikpwr.me
+	redir @www https://pratikpwr.me{uri} permanent
 
 	header {
 		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "DENY"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		# Allowed third parties: Umami analytics and the Web3Forms contact form API.
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://umami-production-b32b.up.railway.app; connect-src 'self' https://umami-production-b32b.up.railway.app https://api.web3forms.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; form-action 'self' https://api.web3forms.com https://web3forms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
 		-Server
 	}
+
+	# Files in /_astro/ have content hashes in their names. Cache them for one year.
+	@hashed path /_astro/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+	# Pages and other files must revalidate, so a new deploy shows at once.
+	@unhashed not path /_astro/*
+	header @unhashed Cache-Control "public, max-age=0, must-revalidate"
 
 	root * /app/dist
 

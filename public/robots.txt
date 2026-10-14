@@ -41,4 +41,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://pratikpwr.me/sitemap-index.xml
-Sitemap: https://pratikpwr.me/llms.txt

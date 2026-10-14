@@ -5,7 +5,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? 'github' : 'list',
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: 'http://127.0.0.1:4321',
     trace: 'on-first-retry',
@@ -22,8 +22,9 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
     {
+      // Pixel 7 runs on Chromium, so CI needs only one browser.
       name: 'mobile',
-      use: { ...devices['iPhone 13'] },
+      use: { ...devices['Pixel 7'] },
     },
   ],
 });

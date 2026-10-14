@@ -1,4 +1,23 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+/** Waits for the mobile menu open/close transition to finish. */
+async function settleMenu(page: Page) {
+  await page.locator('.nav-links').evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+}
+
+/** Waits until the section's top sits just below the sticky header. */
+async function expectLandedBelowHeader(page: Page, id: string) {
+  const headerHeight = await page.locator('header.site').evaluate((el) => el.getBoundingClientRect().height);
+  await expect
+    .poll(
+      async () => {
+        const top = await page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top);
+        return top >= headerHeight - 1 && top <= headerHeight + 40;
+      },
+      { timeout: 8_000 },
+    )
+    .toBe(true);
+}
 
 test.describe('portfolio smoke', () => {
   test('home renders key landmarks and metadata', async ({ page }) => {
@@ -18,12 +37,75 @@ test.describe('portfolio smoke', () => {
     expect(jsonLd).toContain('GraphQL');
   });
 
-  test('primary navigation anchors exist', async ({ page }) => {
+  test('primary navigation anchors exist', async ({ page, isMobile }) => {
     await page.goto('/');
+    if (isMobile) await page.getByRole('button', { name: 'Menu' }).click();
     for (const id of ['about', 'build', 'work', 'experience', 'contact']) {
       await expect(page.locator(`#${id}`)).toBeAttached();
       await expect(page.locator(`.nav-links a[href="#${id}"]`)).toBeVisible();
     }
+  });
+
+  test('mobile menu opens, links to every section, and closes after a tap', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'Mobile menu only');
+    await page.goto('/');
+    const toggle = page.getByRole('button', { name: 'Menu' });
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('.nav-links a[href="#work"]')).toBeHidden();
+
+    await toggle.click();
+    await expect(page.getByRole('button', { name: 'Close' })).toHaveAttribute('aria-expanded', 'true');
+    await settleMenu(page);
+    await expect(page.locator('.nav-links a[href="#work"]')).toBeVisible();
+    await expect(page.locator('.nav-links .nav-resume-mobile')).toBeVisible();
+
+    await page.locator('.nav-links a[href="#work"]').click();
+    await expect(page.getByRole('button', { name: 'Menu' })).toHaveAttribute('aria-expanded', 'false');
+    await expect(page).toHaveURL(/#work$/);
+    await expectLandedBelowHeader(page, 'work');
+  });
+
+  test('anchor links scroll once, without a jump, and land below the sticky header', async ({ page, isMobile }) => {
+    await page.goto('/');
+    if (isMobile) {
+      await page.getByRole('button', { name: 'Menu' }).click();
+      await settleMenu(page);
+    }
+    // Record every scroll position. A native jump followed by a smooth scroll shows up
+    // as a large move forward and then a move back.
+    await page.evaluate(() => {
+      (window as unknown as { positions: number[] }).positions = [];
+      addEventListener('scroll', () => (window as unknown as { positions: number[] }).positions.push(scrollY));
+    });
+    await page.locator('.nav-links a[href="#experience"]').click();
+    await expectLandedBelowHeader(page, 'experience');
+    const positions = await page.evaluate(() => (window as unknown as { positions: number[] }).positions);
+    const movedBack = positions.some((y, i) => i > 0 && y < positions[i - 1] - 1);
+    expect(movedBack, 'scroll moved backwards during an anchor scroll').toBe(false);
+  });
+
+  test('inner pages link back to home sections', async ({ page }) => {
+    await page.goto('/thanks');
+    await expect(page.locator('.nav-brand')).toHaveAttribute('href', '/');
+    for (const id of ['about', 'build', 'work', 'experience', 'contact']) {
+      await expect(page.locator(`.nav-links a[href="/#${id}"]`)).toBeAttached();
+    }
+  });
+
+  test('page has no horizontal overflow', async ({ page }) => {
+    await page.goto('/');
+    const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+    }));
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+  });
+
+  test('social preview image is set and served', async ({ page, request }) => {
+    await page.goto('/');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\/og\.jpg$/);
+    const response = await request.get('/og.jpg');
+    expect(response.status()).toBe(200);
   });
 
   test('selected work includes Nirmo and project descriptions', async ({ page }) => {
@@ -72,6 +154,14 @@ test.describe('portfolio smoke', () => {
     await firstTab.focus();
     await expect(firstTab).toBeFocused();
     await expect(firstTab).toHaveAttribute('aria-selected', 'true');
+
+    // Arrow keys move to the next territory and scroll the pinned stage to it.
+    await page.keyboard.press('ArrowDown');
+    const secondTab = rail.getByRole('tab').nth(1);
+    await expect(secondTab).toBeFocused();
+    await expect(secondTab).toHaveAttribute('aria-selected', 'true', { timeout: 8_000 });
+    // Links in hidden scenes must not take keyboard focus.
+    await expect(page.locator('[data-scene]').first()).toHaveJSProperty('inert', true);
   });
 
   test('contact form exposes labels and redirects to thanks', async ({ page }) => {
@@ -86,6 +176,36 @@ test.describe('portfolio smoke', () => {
     await expect(accessKey).toHaveCount(1);
     await expect(accessKey).toHaveAttribute('value', /.+/);
     await expect(form.getByRole('button', { name: /Send message/ })).toBeEnabled();
+  });
+
+  test('contact form sends with JavaScript and opens the thanks page', async ({ page }) => {
+    await page.route('https://api.web3forms.com/submit', async (route) => {
+      const body = route.request().postDataJSON();
+      expect(body).toMatchObject({ name: 'Test Person', email: 'test@example.com', message: 'Hello' });
+      expect(body).not.toHaveProperty('botcheck');
+      await route.fulfill({ json: { success: true, message: 'Email sent successfully!' } });
+    });
+    await page.goto('/');
+    await page.getByLabel('Name').fill('Test Person');
+    await page.getByLabel('Email').fill('test@example.com');
+    await page.getByLabel('Message').fill('Hello');
+    await page.getByRole('button', { name: /Send message/ }).click();
+    await expect(page).toHaveURL(/\/thanks\/?$/);
+    await expect(page.getByRole('heading', { name: 'Message sent.' })).toBeVisible();
+  });
+
+  test('contact form shows an error and keeps the message when sending fails', async ({ page }) => {
+    await page.route('https://api.web3forms.com/submit', (route) =>
+      route.fulfill({ status: 400, json: { success: false, message: 'Invalid access key' } }),
+    );
+    await page.goto('/');
+    await page.getByLabel('Name').fill('Test Person');
+    await page.getByLabel('Email').fill('test@example.com');
+    await page.getByLabel('Message').fill('Keep this text');
+    await page.getByRole('button', { name: /Send message/ }).click();
+    await expect(page.getByRole('status').filter({ hasText: 'Invalid access key' })).toBeVisible();
+    await expect(page.getByLabel('Message')).toHaveValue('Keep this text');
+    await expect(page.getByRole('button', { name: /Send message/ })).toBeEnabled();
   });
 
   test('thanks and 404 pages render', async ({ page }) => {

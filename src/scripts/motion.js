@@ -9,7 +9,6 @@ import Lenis from 'lenis';
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(pointer: fine)').matches;
-const NAV_OFFSET = 80;
 
 /* ---- trailing cursor dot ---- */
 if (finePointer && !reduced) {
@@ -69,6 +68,9 @@ if (finePointer && !reduced) {
 
 if (!reduced) {
   gsap.registerPlugin(ScrollTrigger);
+  // Mobile browsers resize the viewport when the address bar hides. Do not
+  // recalculate every trigger on that resize; it causes visible jumps.
+  ScrollTrigger.config({ ignoreMobileResize: true });
   document.documentElement.classList.add('gs');
 
   /* ---- Lenis smooth scroll, wired to ScrollTrigger ---- */
@@ -77,14 +79,38 @@ if (!reduced) {
     lenis = new Lenis({
       lerp: 0.11,
       smoothWheel: true,
-      anchors: { offset: NAV_OFFSET },
     });
     document.documentElement.classList.add('lenis');
     lenis.on('scroll', ScrollTrigger.update);
+    // Pinning adds scroll height after Lenis first measures the page. Re-measure
+    // after every ScrollTrigger refresh, or Lenis clamps scrolls to the old height.
+    ScrollTrigger.addEventListener('refresh', () => lenis.resize());
     gsap.ticker.add((t) => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
   } catch {
     /* native scroll fallback */
+  }
+
+  /* ---- in-page anchor links ----
+     Lenis's own anchor option does not cancel the browser's jump, so the page
+     flashes at the target and then jumps back. Handle the click here instead.
+     Lenis reads `scroll-margin-top` (global.css), which keeps targets clear of the nav. */
+  if (lenis) {
+    document.addEventListener('click', (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const link = e.target instanceof Element ? e.target.closest('a[href^="#"]') : null;
+      if (!link || link.classList.contains('skip-link')) return;
+      const hash = link.getAttribute('href');
+      const target = hash && hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+      if (!target) return;
+      e.preventDefault();
+      lenis.resize();
+      lenis.scrollTo(target);
+      history.pushState(null, '', hash);
+      // Move keyboard focus to the section, as a native anchor jump would.
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+    });
   }
 
   /* ---- layered hero parallax ---- */
@@ -111,17 +137,20 @@ if (!reduced) {
     scrollTrigger: { trigger: '.hero', start: 'top top', end: '42% top', scrub: true },
   });
 
-  /* ---- stats parallax drift ---- */
-  gsap.utils.toArray('.stat').forEach((el, i) => {
-    gsap.fromTo(
-      el,
-      { y: i % 2 ? 90 : 40 },
-      {
-        y: i % 2 ? 10 : -20,
-        ease: 'none',
-        scrollTrigger: { trigger: '.stats', start: 'top bottom', end: 'bottom top', scrub: true },
-      },
-    );
+  /* ---- stats parallax drift (two-column layout only; it overlaps cards on phones) ---- */
+  const statsMM = gsap.matchMedia();
+  statsMM.add('(min-width: 621px)', () => {
+    gsap.utils.toArray('.stat').forEach((el, i) => {
+      gsap.fromTo(
+        el,
+        { y: i % 2 ? 90 : 40 },
+        {
+          y: i % 2 ? 10 : -20,
+          ease: 'none',
+          scrollTrigger: { trigger: '.stats', start: 'top bottom', end: 'bottom top', scrub: true },
+        },
+      );
+    });
   });
 
   /* ---- stats numerals: dim until scrolled into focus, then full red ---- */
@@ -292,7 +321,11 @@ if (!reduced) {
         b.setAttribute('aria-selected', on ? 'true' : 'false');
         b.tabIndex = on ? 0 : -1;
       });
-      scenes.forEach((s, k) => s.classList.toggle('live', k === idx));
+      scenes.forEach((s, k) => {
+        s.classList.toggle('live', k === idx);
+        // Hidden scenes stay in the DOM for the morph. `inert` keeps their links out of the tab order.
+        s.inert = k !== idx;
+      });
       const activeBtn = railBtns[idx];
       if (liveRegion && activeBtn) {
         liveRegion.textContent = `Showing ${activeBtn.textContent?.trim() ?? ''}`;
@@ -322,7 +355,7 @@ if (!reduced) {
     const st = ScrollTrigger.create({
       trigger: stage,
       start: 'top top',
-      end: `+=${scenes.length * 160}%`,
+      end: `+=${scenes.length * 120}%`,
       pin: true,
       scrub: 0.9,
       animation: tl,
@@ -339,8 +372,24 @@ if (!reduced) {
       else window.scrollTo({ top: y, behavior: 'smooth' });
     };
 
-    railBtns.forEach((b) => {
-      b.addEventListener('click', () => onRailClick(b));
+    // Tabs pattern: arrow keys, Home and End move between tabs.
+    const onRailKey = (e) => {
+      const current = railBtns.indexOf(e.currentTarget);
+      let next = -1;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = (current + 1) % railBtns.length;
+      else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = (current - 1 + railBtns.length) % railBtns.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = railBtns.length - 1;
+      if (next < 0) return;
+      e.preventDefault();
+      railBtns[next].focus();
+      onRailClick(railBtns[next]);
+    };
+    const railClickHandlers = railBtns.map((b) => () => onRailClick(b));
+
+    railBtns.forEach((b, k) => {
+      b.addEventListener('click', railClickHandlers[k]);
+      b.addEventListener('keydown', onRailKey);
     });
 
     // Cleanup when dropping below desktop breakpoint
@@ -350,15 +399,31 @@ if (!reduced) {
       created.forEach((el) => el.remove());
       scenes.forEach((s) => {
         s.classList.remove('live');
+        s.inert = false;
         gsap.set(contentFade(s), { clearProps: 'opacity' });
         gsap.set(contentShift(s), { clearProps: 'opacity,y' });
       });
-      railBtns.forEach((b) => {
+      railBtns.forEach((b, k) => {
+        b.removeEventListener('click', railClickHandlers[k]);
+        b.removeEventListener('keydown', onRailKey);
         b.classList.remove('on');
         b.removeAttribute('aria-selected');
         b.tabIndex = 0;
       });
     };
+  });
+
+  /* ---- showcase on phones and tablets: each card plays its entrance once ---- */
+  mm.add('(max-width: 880px)', () => {
+    const triggers = gsap.utils.toArray('[data-scene]').map((scene) =>
+      ScrollTrigger.create({
+        trigger: scene.querySelector('.scene-art') ?? scene,
+        start: 'top 82%',
+        once: true,
+        onEnter: () => scene.classList.add('in'),
+      }),
+    );
+    return () => triggers.forEach((t) => t.kill());
   });
 
   /* ---- editorial reveals: transform only, content stays visible ---- */

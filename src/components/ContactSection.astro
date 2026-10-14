@@ -9,6 +9,7 @@ import form04 from '../assets/images/abstract-form-04.jpg';
 const stripImages = [form01, form02, form03, form04];
 const accessKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY;
 const thanksUrl = new URL('/thanks', Astro.site ?? 'https://pratikpwr.me').href;
+const year = new Date().getFullYear();
 ---
 
 <section id="contact" class="contact" aria-labelledby="contact-h">
@@ -45,7 +46,13 @@ const thanksUrl = new URL('/thanks', Astro.site ?? 'https://pratikpwr.me').href;
         </a>
       ))}
     </div>
-    <form class="form" action="https://api.web3forms.com/submit" method="POST" aria-label="Contact form">
+    <form
+      class="form"
+      action="https://api.web3forms.com/submit"
+      method="POST"
+      aria-label="Contact form"
+      data-contact-form
+    >
       {accessKey ? (
         <input type="hidden" name="access_key" value={accessKey} />
       ) : (
@@ -59,17 +66,20 @@ const thanksUrl = new URL('/thanks', Astro.site ?? 'https://pratikpwr.me').href;
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
       <div>
         <label for="f-name">Name</label>
-        <input id="f-name" type="text" name="name" placeholder="Your name" required autocomplete="name" />
+        <input id="f-name" type="text" name="name" placeholder="Your name" required maxlength="120" autocomplete="name" />
       </div>
       <div>
         <label for="f-email">Email</label>
-        <input id="f-email" type="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+        <input id="f-email" type="email" name="email" placeholder="you@example.com" required maxlength="200" autocomplete="email" />
       </div>
       <div>
         <label for="f-msg">Message</label>
-        <textarea id="f-msg" name="message" placeholder="Tell me about your project…" required></textarea>
+        <textarea id="f-msg" name="message" placeholder="Tell me about your project…" required maxlength="5000"></textarea>
       </div>
-      <button type="submit" disabled={!accessKey}>Send message →</button>
+      <div class="form-actions">
+        <button type="submit" disabled={!accessKey} data-submit>Send message →</button>
+        <p class="form-status" role="status" aria-live="polite" data-form-status></p>
+      </div>
     </form>
   </div>
 
@@ -77,16 +87,67 @@ const thanksUrl = new URL('/thanks', Astro.site ?? 'https://pratikpwr.me').href;
     <div class="wrap foot">
       <span class="mark">
         <img class="mark-svg" src="/icon-p.png?v=3" alt="" width="14" height="14" />
-        © 2026 Pratik Pawar · Nashik, India
+        © {year} Pratik Pawar · Nashik, India
       </span>
-      <span>Instrument Sans &amp; Instrument Serif · original design, built test-first</span>
-      <span>
-        <a href="https://github.com/pratikpwr" target="_blank" rel="noopener noreferrer">GitHub</a>
-        ·
-        <a href="https://www.linkedin.com/in/pratikpwr/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        ·
-        <a href="https://x.com/impratikpwr" target="_blank" rel="noopener noreferrer">X</a>
-      </span>
+      <span>Set in Instrument Sans &amp; Instrument Serif · built test-first</span>
+      <ul class="foot-links" aria-label="Social profiles">
+        <li><a href="https://github.com/pratikpwr" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/pratikpwr/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://x.com/impratikpwr" target="_blank" rel="noopener noreferrer">X</a></li>
+      </ul>
     </div>
   </footer>
 </section>
+
+<script>
+  // Send the form with fetch so the visitor stays on the page and sees a clear result.
+  // Without JavaScript, the form posts natively and Web3Forms redirects to /thanks.
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const status = form?.querySelector<HTMLElement>('[data-form-status]');
+  const submit = form?.querySelector<HTMLButtonElement>('[data-submit]');
+
+  if (form && status && submit && !submit.disabled) {
+    const idleLabel = submit.textContent ?? 'Send message →';
+
+    const setStatus = (text: string, state: 'idle' | 'sending' | 'error') => {
+      status.textContent = text;
+      status.dataset.state = state;
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      submit.disabled = true;
+      submit.textContent = 'Sending…';
+      setStatus('', 'sending');
+
+      try {
+        const payload = Object.fromEntries(new FormData(form));
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok && result.success) {
+          form.reset();
+          window.location.assign('/thanks');
+          return;
+        }
+        setStatus(
+          result.message
+            ? `The message did not send: ${result.message}. Please try again or email me directly.`
+            : 'The message did not send. Please try again or email me directly.',
+          'error',
+        );
+      } catch {
+        setStatus('The network is not available. Please try again or email me directly.', 'error');
+      }
+
+      submit.disabled = false;
+      submit.textContent = idleLabel;
+    });
+  }
+</script>
