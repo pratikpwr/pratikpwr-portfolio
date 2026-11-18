@@ -117,6 +117,7 @@ export const showcaseScenes: ShowcaseScene[] = [
     apps: [
       { label: 'Nirmo ↗', href: 'https://nirmo.dev' },
       { label: 'graphql_network_devtools ↗', href: 'https://pub.dev/packages/graphql_network_devtools' },
+      { label: 'mixpanel_devtools ↗', href: 'https://pub.dev/packages/mixpanel_devtools' },
       { label: 'Mason codegen templates ↗', href: 'https://github.com/pratikpwr' },
     ],
     meta: [
@@ -137,6 +138,26 @@ export const workItems: WorkItem[] = [
     description:
       'AI-powered Flutter app builder that turns natural-language prompts into create, edit, and live-preview workflows across multiple device form factors — desktop-first tooling with Claude Sonnet and LLM agents in the loop.',
     stack: 'Flutter · Dart · Node.js · TypeScript · Claude · LLM',
+  },
+  {
+    id: 'graphql-network-devtools',
+    title: 'graphql_network_devtools',
+    org: 'Open source · pub.dev',
+    href: 'https://pub.dev/packages/graphql_network_devtools',
+    cta: 'pub.dev ↗',
+    description:
+      'Flutter DevTools extension that shows GraphQL traffic by operation name — variables, response tree, GraphQL errors, headers, timing and copy as cURL. Works with graphql_flutter, ferry, dio and http, with no app code changes.',
+    stack: 'Dart · Flutter DevTools · GraphQL · 160 pub points',
+  },
+  {
+    id: 'mixpanel-devtools',
+    title: 'mixpanel_devtools',
+    org: 'Open source · pub.dev',
+    href: 'https://pub.dev/packages/mixpanel_devtools',
+    cta: 'pub.dev ↗',
+    description:
+      'Flutter DevTools extension that shows every Mixpanel call of a running app, live — events, properties and super properties, with search, filters and export to JSON, CSV or Markdown.',
+    stack: 'Dart · Flutter DevTools · Mixpanel · 150 pub points',
   },
   {
     id: 'eatos-pos',
@@ -251,6 +272,9 @@ export const experience: ExperienceItem[] = [
       'Consulting-grade software crafting on client engagements — translating complex requirements into actionable tickets, raising technical and delivery risks early, and facilitating Scrum ceremonies including retrospectives. Advocate for XP practices: TDD, pair programming, continuous integration, and systematic refactoring, with AI agentic tooling in the daily loop.',
     wins: [
       {
+        html: 'Sharded the CI pipeline — developer wait time from <b>18 minutes to 6</b>.',
+      },
+      {
         html: 'Published <a href="https://pub.dev/packages/graphql_network_devtools" target="_blank" rel="noopener noreferrer">graphql_network_devtools</a> — <b>GraphQL debugging inside Flutter DevTools</b>.',
       },
       {
@@ -342,7 +366,7 @@ export const methodItems: MethodItem[] = [
     number: '03',
     title: 'Tools worth shipping',
     bodyHtml:
-      '<a href="https://pub.dev/packages/graphql_network_devtools" target="_blank" rel="noopener noreferrer">graphql_network_devtools</a> on pub.dev; Mason templates that erase boilerplate; Nirmo for prompt-to-Flutter prototyping.',
+      '<a href="https://pub.dev/packages/graphql_network_devtools" target="_blank" rel="noopener noreferrer">graphql_network_devtools</a> and <a href="https://pub.dev/packages/mixpanel_devtools" target="_blank" rel="noopener noreferrer">mixpanel_devtools</a> on pub.dev; Mason templates that erase boilerplate; Nirmo for prompt-to-Flutter prototyping.',
   },
   {
     number: '04',

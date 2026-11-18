@@ -1,7 +1,7 @@
 {
   "name": "pratikpwr-portfolio",
   "version": "1.0.0",
-  "description": "Portfolio of Pratik Pawar — Senior Flutter Developer. Astro + GSAP + Lenis.",
+  "description": "Portfolio of Pratik Pawar — Software Engineer, Mobile & AI. Astro + GSAP + Lenis.",
   "type": "module",
   "engines": {
     "node": ">=22.12.0"
