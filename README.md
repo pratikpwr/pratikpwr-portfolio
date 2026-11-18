@@ -1,6 +1,6 @@
 # pratikpwr.me — Portfolio
 
-Portfolio of **Pratik Pawar**, Senior Flutter Developer (Nashik, India).
+Portfolio of **Pratik Pawar**, Software Engineer — Mobile & AI (Nashik, India).
 
 Built with [Astro 7](https://astro.build) — static-first HTML with optimized
 `astro:assets` images/fonts, typed portfolio data, and a progressive motion

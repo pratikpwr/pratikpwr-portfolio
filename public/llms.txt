@@ -1,6 +1,6 @@
 # Pratik Pawar
 
-> Senior Flutter developer in Nashik, India with 5+ years building fast, tested, store-ready mobile apps across HealthTech, agri-tech, restaurant tech and e-commerce — payments, GraphQL, CI/CD, and AI-augmented TDD. Open to remote work.
+> Software engineer (mobile & AI) in Nashik, India with 5+ years building mobile apps, AI agents and developer tools across HealthTech, agri-tech, restaurant tech and e-commerce — Flutter, payments, GraphQL, CI/CD, and AI-assisted TDD. Open to remote work.
 
 ## Pages
 
@@ -10,9 +10,9 @@
 
 - Role: Software Crafter II at Incubyte (remote); previously Senior Flutter Developer at eatOS, Mobile Application Developer at FarmSetu, Flutter Developer at DreamCare Developers
 - Focus: Flutter / Dart cross-platform apps; clean architecture; TDD; payments (Stripe, Adyen, NFC); GraphQL; Firebase; CI/CD
-- AI tooling: Cursor, Claude Code, agentic PR-review workflows; built Nirmo (AI-powered Flutter app builder)
-- Track record: 5+ years shipping; 11 apps built (6 on Play Store); −12% transaction costs at eatOS; +30% weekly active users at FarmSetu
-- Notable projects: Nirmo, eatOS POS / Kitchen Display / Point of Purchase, SetuFarm, SetuTrade, Nearme, Police Patil System, graphql_network_devtools (pub.dev)
+- AI tooling: Cursor, Claude Code, agentic PR-review workflows, LLM integration; built Nirmo (AI-powered Flutter app builder)
+- Track record: 5+ years shipping; 11 apps built (6 on Play Store); CI wait cut from 18 to 6 minutes with sharding at Incubyte; −12% transaction costs at eatOS; +30% weekly active users at FarmSetu
+- Notable projects: Nirmo, eatOS POS / Kitchen Display / Point of Purchase, SetuFarm, SetuTrade, Nearme, Police Patil System, graphql_network_devtools and mixpanel_devtools (open-source Flutter DevTools extensions on pub.dev)
 - Location: Nashik, India — remote-ready, IST
 - Community: Speaker, Flutter Nashik; host of tech meetups
 - Education: B.E. Computer Science, SITRC Nashik
